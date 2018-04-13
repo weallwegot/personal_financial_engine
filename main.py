@@ -31,19 +31,38 @@ class Transaction(object):
 		elif self.transaction_type.lower() == 'payment':
 			pass
 
-		self.frequency = Q_(self.frequency.replace('d','day').replace('w','week').replace(' ','+'))
+		self.frequency = Q_(self.frequency.replace('d','day').replace('w','week').replace(' ','+')).to('week')
 
 		self.sample_date = parser.parse(self.sample_date)
 
-	def should_payment_occur_today(self,datetime_object):
+	def should_payment_occur_today(self,datetime_object,check_cycles=55):
 		"""
 		Given a datetime object determine if this transaction
 		would have occurred on a given date
 		function does some math based on the sample date provided
 		and the frequency indicated
+		TODO: this is slow and inefficient
+		:param check_cycles: number of occurrences (in weeks) to check in either direction from sample date 
 		"""
-		
 
+		cycles = range(check_cycles)
+		dtc = datetime_object.day
+		mtc = datetime_object.month
+		ytc = datetime_object.year
+
+		for occ in cycles:
+
+			forward = self.sample_date + self.frequency*occ
+			backward = self.sample_date - self.frequency*occ
+
+			if ((backward.day == dtc)
+			and (backward.month == mtc)
+			and (backward.year == ytc)):
+				return True
+			elif (forward.day == dtc) and (forward.month == mtc) and (forward.year == ytc):
+				return True
+			else:
+				continue
 
 		return False
 
@@ -72,6 +91,7 @@ for day in days:
 	simulated_day = now + Q_(day,'day')
 	for tx in txs_list:
 		if tx.should_payment_occur_today(simulated_day):
+			print "Paying {} Today\nSample Date: {}\nSimulated Day:{}\n".format(tx.description,tx.sample_date,simulated_day)
 			curr_amt += tx.amount
 
 	print "Day: {}".format(simulated_day)
