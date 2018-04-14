@@ -3,6 +3,8 @@ from dateutil import parser
 import os
 import pandas as pd
 import pint
+from bokeh.plotting import figure, output_file, show
+
 from definitions import ROOT_DIR, Q_
 
 
@@ -20,9 +22,9 @@ class Transaction(object):
 		self.transaction_type = t
 		self.description = d
 		self.sample_date = sd
-		self.parse_attributes()
+		self._parse_attributes()
 
-	def parse_attributes(self):
+	def _parse_attributes(self):
 
 		self.amount = Q_(float(self.amount.replace('$','')),'usd')
 
@@ -81,22 +83,30 @@ for row in rows:
 	txs_list.append(tx)
 
 
-DAYS_TO_PROJECT = 60
+DAYS_TO_PROJECT = 300
+# checkings account vs credit card debt lmao
 START_AMOUNT = Q_(2800,'usd') - Q_(3400,'usd')
 now = datetime.datetime.now()
-
+tings2plot = []
 days = range(DAYS_TO_PROJECT)
 curr_amt = START_AMOUNT
 for day in days:
 	simulated_day = now + Q_(day,'day')
 	for tx in txs_list:
 		if tx.should_payment_occur_today(simulated_day):
-			print "Paying {} Today\nSample Date: {}\nSimulated Day:{}\n".format(tx.description,tx.sample_date,simulated_day)
+			# print "Paying {} Today\nSample Date: {}\nSimulated Day:{}\n".format(tx.description,tx.sample_date,simulated_day)
 			curr_amt += tx.amount
 
 	print "Day: {}".format(simulated_day)
 	print "Amount: {}".format(curr_amt)
+	myliltuple = (simulated_day,curr_amt)
+	tings2plot.append(myliltuple)
 
+
+# create a new plot with a datetime axis type
+p = figure(width=800, height=250, x_axis_type="datetime")
+p.line([x[0] for x in tings2plot],[x[1].magnitude for x in tings2plot])
+show(p)
 
 
 
