@@ -3,6 +3,8 @@ __pycache__/
 *.py[cod]
 *$py.class
 
+**money_io.csv
+
 # C extensions
 *.so
 **DS_Store
