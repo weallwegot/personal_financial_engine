@@ -3,8 +3,10 @@ __pycache__/
 *.py[cod]
 *$py.class
 
+## personal data files
 **money_io.csv
-
+**my_*.csv
+main.html
 # C extensions
 *.so
 **DS_Store
