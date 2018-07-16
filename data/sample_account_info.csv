@@ -1,4 +1,4 @@
-AccountName,Balance,Type
-WF_Checking,100,Checking
-WF_Credit,20,Credit
-CitiCredit,500,Credit
+AccountName,Balance,Type,PayoffDay
+WF_Checking,100,Checking,N/A
+WF_Credit,20,Credit,3
+CitiCredit,500,Credit,15
