@@ -5,7 +5,7 @@ import pandas as pd
 import pint
 from bokeh.plotting import figure, output_file, show
 
-from definitions import ROOT_DIR, Q_
+from definitions import ROOT_DIR, Q_, CHECKING, CREDIT, VALID_ACCT_TYPES
 
 import logging
 
@@ -32,12 +32,14 @@ accounts_df = pd.read_csv(os.path.join(ROOT_DIR,'data',"sample_account_info.csv"
 # print str(money_df)
 
 class Account(object):
-	def __init__(self,name,bal,acct_type,payback_date=None,payback_src=None):
+	def __init__(self,name,bal,acct_type,payback_date=None,payback_src=None,credit_limit=None):
 		self.name = name
 		self.balance = Q_(float(bal.replace('$','')),'usd')
 		self.acct_type = acct_type.upper()
 		self.payback_date = payback_date
 		self.payback_src = payback_src
+
+		self.credit_limit = credit_limit
 		self._validate()
 
 	def __repr__(self):
@@ -53,10 +55,21 @@ class Account(object):
 			if 28 > int(self.payback_date) > 0:
 				self.payback_date = int(self.payback_date)
 
+			self.credit_limit = Q_(float(self.credit_limit.replace('$','')),'usd')
+
 	def process_tx(self,transaction_obj):
 
 		self.balance += transaction_obj.amount
 		if self.acct_type = CREDIT:
+			bal_credit_ration = abs(self.balance/self.credit_limit)
+			if  > 0.20:
+				logger.INFO("{}")
+
+		elif self.acct_type = CHECKING:
+			if self.balance < 0:
+				logger.INFO("{} has just overdrafted.".format(self))
+
+
 
 
 
