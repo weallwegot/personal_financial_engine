@@ -7,31 +7,55 @@ from bokeh.plotting import figure, output_file, show
 
 from definitions import ROOT_DIR, Q_
 
+import logging
 
+logger = logging.getLogger('finance_app')
+logger.setLevel(logging.DEBUG)
+# create file handler which logs even debug messages
+fh = logging.FileHandler('finance_app.log')
+fh.setLevel(logging.DEBUG)
+# create console handler with a higher log level
+ch = logging.StreamHandler()
+ch.setLevel(logging.ERROR)
+# create formatter and add it to the handlers
+formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+fh.setFormatter(formatter)
+ch.setFormatter(formatter)
+# add the handlers to the logger
+logger.addHandler(fh)
+logger.addHandler(ch)
 
 # read in a dataframe that defines all the recurring money transaction
 # money_df = pd.read_csv(os.path.join(ROOT_DIR,'data',"money_io.csv"))
-money_df = pd.read_csv(os.path.join(ROOT_DIR,'data',"new_job_refinanced_loan.csv"))
+money_df = pd.read_csv(os.path.join(ROOT_DIR,'data',"my_new_job_refinanced_loan.csv"))
 accounts_df = pd.read_csv(os.path.join(ROOT_DIR,'data',"sample_account_info.csv"))
 # print str(money_df)
 
 class Account(object):
-	def __init__(self,name,bal,acct_type,payback_date=None):
+	def __init__(self,name,bal,acct_type,payback_date=None,payback_src=None):
 		self.name = name
-		self.balance = bal
+		self.balance = Q_(float(bal.replace('$','')),'usd')
 		self.acct_type = acct_type.upper()
 		self.payback_date = payback_date
+		self.payback_src = payback_src
 		self._validate()
+
+	def __repr__(self):
+		return "{}: {}".format(self.name, self.balance)
 
 	def _validate(self):
 		if self.acct_type not in ["CHECKING","CREDIT"]:
 			raise ValueError('What is this account type? {}\nMust be checking or credit'
 				.format(self.acct_type))
 		if self.acct_type == "CREDIT":
-			self.balance = -(bal)
+			self.balance = self.balance*(-1.0)
 
 			if 28 > int(self.payback_date) > 0:
 				self.payback_date = int(self.payback_date)
+
+	def process_tx(self,transaction_obj):
+
+		self.balance += transaction_obj.amount
 
 
 
@@ -100,7 +124,8 @@ for acct in acct_rows:
 	bal = acct.Balance
 	acct_type = acct.Type
 	paydate = acct.PayoffDay
-	accts_dict[acctname] = Account(acctname,bal,acct_type,paydate)
+	paysrc = acct.PayoffSource
+	accts_dict[acctname] = Account(acctname,bal,acct_type,paydate,paysrc)
 
 
 # Initialize Transaction Objects
@@ -118,19 +143,14 @@ for row in rows:
 	tx = Transaction(f=freq,a=amt,t=tx_type,d=desc,sd=samp_d,sc=src)
 	# print tx.frequency
 	txs_list.append(tx)
-	if src in accounts.keys():
-		continue
-	else:	
-		accounts[src] = Account(src)
 
 
 
 # TODO make this a command line argument beloved
-DAYS_TO_PROJECT = 100
+DAYS_TO_PROJECT = 50
 now = datetime.datetime.now()
 tings2plot = []
 days = range(DAYS_TO_PROJECT)
-curr_amt = START_AMOUNT
 
 
 # This the actual simulation running through days
@@ -138,11 +158,19 @@ for day in days:
 	simulated_day = now + Q_(day,'day')
 	for tx in txs_list:
 		if tx.should_payment_occur_today(simulated_day):
-			# print "Paying {} Today\nSample Date: {}\nSimulated Day:{}\n".format(tx.description,tx.sample_date,simulated_day)
-			curr_amt += tx.amount
+			logger.debug("Paying {} Today\nSample Date: {}\nSimulated Day:{}\n".format(tx.description,tx.sample_date,simulated_day))
+			logger.debug("From Acct: {}".format(tx.source))
+
+			try:
+				acct_obj = accts_dict[tx.source]
+			except KeyError:
+				raise ValueError("{} is not an account in {}".format(tx.source,accts_dict.keys()))
+			
+			acct_obj.process_tx(tx)
 
 	print "Day: {}".format(simulated_day)
-	print "Amount: {}".format(curr_amt)
+	print "Amount: {}".format(accts_dict.values())
+	curr_amt = sum([acc.balance for acc in accts_dict.values()])
 	myliltuple = (simulated_day,curr_amt)
 	tings2plot.append(myliltuple)
 
