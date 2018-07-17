@@ -9,3 +9,7 @@ Q_ = ureg.Quantity
 
 
 ROOT_DIR = os.path.dirname(os.path.abspath(__file__))
+
+CREDIT = "CREDIT"
+CHECKING = "CHECKING"
+VALID_ACCT_TYPES = [CREDIT,CHECKING]
