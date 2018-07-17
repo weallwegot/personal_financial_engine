@@ -145,6 +145,8 @@ class Transaction(object):
 		function does some math based on the sample date provided
 		and the frequency indicated
 		TODO: this is slow and inefficient
+		TODO: this will also break after you get outside the check_cycles window from the sample date.
+		TODO: to fix this the self.sample_date should update when this returns true.
 		:param check_cycles: number of occurrences (in weeks) to check in either direction from sample date 
 		"""
 
