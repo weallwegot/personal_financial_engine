@@ -44,10 +44,10 @@ class Account(object):
 		return "{}: {}".format(self.name, self.balance)
 
 	def _validate(self):
-		if self.acct_type not in ["CHECKING","CREDIT"]:
+		if self.acct_type not in VALID_ACCT_TYPES:
 			raise ValueError('What is this account type? {}\nMust be checking or credit'
 				.format(self.acct_type))
-		if self.acct_type == "CREDIT":
+		if self.acct_type == CREDIT:
 			self.balance = self.balance*(-1.0)
 
 			if 28 > int(self.payback_date) > 0:
@@ -56,6 +56,8 @@ class Account(object):
 	def process_tx(self,transaction_obj):
 
 		self.balance += transaction_obj.amount
+		if self.acct_type = CREDIT:
+
 
 
 
@@ -167,6 +169,8 @@ for day in days:
 				raise ValueError("{} is not an account in {}".format(tx.source,accts_dict.keys()))
 			
 			acct_obj.process_tx(tx)
+	# check all the accounts and see if its a payoff date
+
 
 	print "Day: {}".format(simulated_day)
 	print "Amount: {}".format(accts_dict.values())
