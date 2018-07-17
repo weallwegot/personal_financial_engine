@@ -16,7 +16,7 @@ fh = logging.FileHandler('finance_app.log')
 fh.setLevel(logging.DEBUG)
 # create console handler with a higher log level
 ch = logging.StreamHandler()
-ch.setLevel(logging.ERROR)
+ch.setLevel(logging.INFO)
 # create formatter and add it to the handlers
 formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
 fh.setFormatter(formatter)
@@ -57,22 +57,58 @@ class Account(object):
 
 			self.credit_limit = Q_(float(self.credit_limit.replace('$','')),'usd')
 
-	def process_tx(self,transaction_obj):
+	def process_tx(self,amount_extractable_obj):
 
-		self.balance += transaction_obj.amount
-		if self.acct_type = CREDIT:
-			bal_credit_ratio = abs(self.balance/self.credit_limit)
-			if bal_credit_ratio > 0.20:
-				logger.INFO("{}\nbe careful, you're debt/limit ratio is {}"
+		"""
+		Ternary evaluation. figure out which attribute the amount is stored in
+		if its a transaction object use the amount attribute
+		if its an account object then use the balance attribute
+		"""
+		
+		amount = amount_extractable_obj.amount if 'amount' in dir(amount_extractable_obj) else amount_extractable_obj.balance
+
+		self.balance += amount
+		if self.acct_type == CREDIT:
+			bal_credit_ratio = round(abs(self.balance/self.credit_limit)*100.,1)
+			if bal_credit_ratio > 20:
+				logger.info("{}\nbe careful, you're debt/limit ratio is {}%\n\
+					anything over 20% may hurt your credit score."
 					.format(self,bal_credit_ratio))
 
-		elif self.acct_type = CHECKING:
-			if self.balance < 0:
-				logger.INFO("{} has just overdrafted.".format(self))
+		elif self.acct_type == CHECKING:
+			if self.balance < Q_(0,'usd'):
+				logger.info("{} has just overdrafted.".format(self))
 
+		# check if balance is an attribute, and update it
 
+		if hasattr(amount_extractable_obj,"balance"):
 
+			# don't just set to 0.0 because future functionality might pay a fraction of balance
+			amount_extractable_obj.balance -= amount
 
+			logger.debug("credit account {} was paid off".
+				format(amount_extractable_obj))
+
+	def payoff_credit_acct(self,account_object):
+		"""
+		modify the account_object by paying off its balance
+		"""
+
+		if account_object.acct_type == CREDIT:
+
+			if self.acct_type == CHECKING:
+				self.process_tx(account_object)
+
+			else:
+				logger.warning("Need to payoff_credt_acct with a checking account.\
+					Skipping this operation.")
+				return
+
+		else:
+			logger.warning("Cannot payoff_credit_acct with {} type acct.\n\
+				skipping this operation."
+				.format(account_object.acct_type))
+			return
 
 
 class Transaction(object):
@@ -142,7 +178,7 @@ for acct in acct_rows:
 	paydate = acct.PayoffDay
 	paysrc = acct.PayoffSource
 	climit = acct.CreditLimit
-	
+
 	accts_dict[acctname] = Account(
 		name=acctname,
 		bal=bal,
@@ -188,20 +224,36 @@ for day in days:
 	simulated_day = now + Q_(day,'day')
 	for tx in txs_list:
 		if tx.should_payment_occur_today(simulated_day):
-			logger.debug("Paying {} Today\nSample Date: {}\nSimulated Day:{}\n".format(tx.description,tx.sample_date,simulated_day))
+			logger.debug("Paying {} Today\nSample Date: {}\nSimulated Day:{}\n"
+				.format(tx.description,tx.sample_date,simulated_day))
+
 			logger.debug("From Acct: {}".format(tx.source))
 
 			try:
 				acct_obj = accts_dict[tx.source]
 			except KeyError:
-				raise ValueError("{} is not an account in {}".format(tx.source,accts_dict.keys()))
+				raise KeyError("Transaction Source {} is not an account in {}"
+					.format(tx.source,accts_dict.keys()))
 			
 			acct_obj.process_tx(tx)
 	# check all the accounts and see if its a payoff date
+	for acct_obj in accts_dict.values():
+		if acct_obj.acct_type == CREDIT and simulated_day.day == acct_obj.payback_date:
+			try:
+				payback_src_acct = accts_dict[acct_obj.payback_src]
+			except KeyError:
+				raise KeyError("Credit Acct Payoff Source {} is not an account in {}"
+					.format(acct_obj.payback_src,accts_dict.keys()))
+
+			# this function modifies both accounts in place
+			payback_src_acct.payoff_credit_acct(acct_obj)
 
 
-	print "Day: {}".format(simulated_day)
-	print "Amount: {}".format(accts_dict.values())
+
+
+
+	logger.info("Day: {}".format(simulated_day))
+	logger.info("Amount: {}".format(accts_dict.values()))
 	curr_amt = sum([acc.balance for acc in accts_dict.values()])
 	myliltuple = (simulated_day,curr_amt)
 	tings2plot.append(myliltuple)
