@@ -274,8 +274,6 @@ for day in days:
 	# update the overall balance across all accounts
 	tings2plot.append(myliltuple)
 
-	print(acct_lines)
-
 
 # create a new plot with a datetime axis type
 p = figure(width=800, height=250, x_axis_type="datetime")
@@ -283,13 +281,22 @@ p = figure(width=800, height=250, x_axis_type="datetime")
 
 for act_name,act_line in acct_lines.items():
 	# make a line of x,y values for each account
-	p.line([x[0] for x in act_line],[x[1].magnitude for x in act_line])
+	clr = 'red'
+	if accts_dict[act_name].acct_type == CHECKING:
+		clr = 'green'
+
+	p.line([x[0] for x in act_line],[x[1].magnitude for x in act_line],color=clr,legend=act_name)
 
 
 # p.line([x[0] for x in tings2plot],[x[1].magnitude for x in tings2plot])
 
 show(p)
 
+
+
+p_total = figure(width=800, height=250, x_axis_type="datetime")
+p_total.line([x[0] for x in tings2plot],[x[1].magnitude for x in tings2plot],color='blue',legend='total balance')
+show(p_total)
 
 
 
