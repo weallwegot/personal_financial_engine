@@ -1,4 +1,4 @@
 AccountName,Balance,Type,PayoffDay,PayoffSource
-WF_Checking,100,Checking,N/A,N/A
-WF_Credit,20,Credit,3,WF_Checking
-CitiCredit,500,Credit,15,WF_Checking
+WF_Checking,$100,Checking,N/A,N/A
+WF_Credit,$20,Credit,3,WF_Checking
+CitiCredit,$500,Credit,15,WF_Checking
