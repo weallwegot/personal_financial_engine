@@ -61,9 +61,10 @@ class Account(object):
 
 		self.balance += transaction_obj.amount
 		if self.acct_type = CREDIT:
-			bal_credit_ration = abs(self.balance/self.credit_limit)
-			if  > 0.20:
-				logger.INFO("{}")
+			bal_credit_ratio = abs(self.balance/self.credit_limit)
+			if bal_credit_ratio > 0.20:
+				logger.INFO("{}\nbe careful, you're debt/limit ratio is {}"
+					.format(self,bal_credit_ratio))
 
 		elif self.acct_type = CHECKING:
 			if self.balance < 0:
@@ -140,7 +141,15 @@ for acct in acct_rows:
 	acct_type = acct.Type
 	paydate = acct.PayoffDay
 	paysrc = acct.PayoffSource
-	accts_dict[acctname] = Account(acctname,bal,acct_type,paydate,paysrc)
+	climit = acct.CreditLimit
+	
+	accts_dict[acctname] = Account(
+		name=acctname,
+		bal=bal,
+		acct_type=acct_type,
+		payback_date=paydate,
+		payback_src=paysrc,
+		credit_limit=climit)
 
 
 # Initialize Transaction Objects
@@ -155,7 +164,13 @@ for row in rows:
 	samp_d = row.Sample_Date
 	src = row.Source
 
-	tx = Transaction(f=freq,a=amt,t=tx_type,d=desc,sd=samp_d,sc=src)
+	tx = Transaction(
+		f=freq,
+		a=amt,
+		t=tx_type,
+		d=desc,
+		sd=samp_d,
+		sc=src)
 	# print tx.frequency
 	txs_list.append(tx)
 
