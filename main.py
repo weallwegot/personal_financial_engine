@@ -27,8 +27,8 @@ logger.addHandler(ch)
 
 # read in a dataframe that defines all the recurring money transaction
 # money_df = pd.read_csv(os.path.join(ROOT_DIR,'data',"money_io.csv"))
-money_df = pd.read_csv(os.path.join(ROOT_DIR,'data',"my_new_job_refinanced_loan.csv"))
-accounts_df = pd.read_csv(os.path.join(ROOT_DIR,'data',"my_account_info.csv"))
+money_df = pd.read_csv(os.path.join(ROOT_DIR,'data',"test_budget.csv"))
+accounts_df = pd.read_csv(os.path.join(ROOT_DIR,'data',"sample_account_info.csv"))
 # print str(money_df)
 
 class Account(object):
