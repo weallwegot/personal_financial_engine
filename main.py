@@ -60,12 +60,14 @@ class Account(object):
 	def process_tx(self,amount_extractable_obj):
 
 		"""
-		Ternary evaluation. figure out which attribute the amount is stored in
+		figure out which attribute the amount is stored in
 		if its a transaction object use the amount attribute
 		if its an account object then use the balance attribute
 		"""
-		
-		amount = amount_extractable_obj.amount if 'amount' in dir(amount_extractable_obj) else amount_extractable_obj.balance
+		if hasattr(amount_extractable_obj,'amount'):
+			amount = amount_extractable_obj.amount
+		elif hasattr(amount_extractable_obj,'balance'):
+			amount = amount_extractable_obj.balance
 
 		self.balance += amount
 		if self.acct_type == CREDIT:
