@@ -28,7 +28,7 @@ logger.addHandler(ch)
 # read in a dataframe that defines all the recurring money transaction
 # money_df = pd.read_csv(os.path.join(ROOT_DIR,'data',"money_io.csv"))
 money_df = pd.read_csv(os.path.join(ROOT_DIR,'data',"my_new_job_refinanced_loan.csv"))
-accounts_df = pd.read_csv(os.path.join(ROOT_DIR,'data',"sample_account_info.csv"))
+accounts_df = pd.read_csv(os.path.join(ROOT_DIR,'data',"my_account_info.csv"))
 # print str(money_df)
 
 class Account(object):
@@ -220,7 +220,7 @@ now = datetime.datetime.now()
 tings2plot = []
 days = range(DAYS_TO_PROJECT)
 
-
+acct_lines = {}
 # This the actual simulation running through days
 for day in days:
 	simulated_day = now + Q_(day,'day')
@@ -256,14 +256,38 @@ for day in days:
 
 	logger.info("Day: {}".format(simulated_day))
 	logger.info("Amount: {}".format(accts_dict.values()))
+
+	# for an overall balance measure
 	curr_amt = sum([acc.balance for acc in accts_dict.values()])
 	myliltuple = (simulated_day,curr_amt)
+
+
+
+	for act in accts_dict.values():
+		currtuple = (simulated_day,act.balance)
+		if act.name in acct_lines.keys():
+			acct_lines[act.name].append(currtuple)
+		else:
+			acct_lines[act.name] = [currtuple]
+
+
+	# update the overall balance across all accounts
 	tings2plot.append(myliltuple)
+
+	print(acct_lines)
 
 
 # create a new plot with a datetime axis type
 p = figure(width=800, height=250, x_axis_type="datetime")
-p.line([x[0] for x in tings2plot],[x[1].magnitude for x in tings2plot])
+
+
+for act_name,act_line in acct_lines.items():
+	# make a line of x,y values for each account
+	p.line([x[0] for x in act_line],[x[1].magnitude for x in act_line])
+
+
+# p.line([x[0] for x in tings2plot],[x[1].magnitude for x in tings2plot])
+
 show(p)
 
 
