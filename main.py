@@ -138,7 +138,7 @@ class Transaction(object):
 
 		self.sample_date = parser.parse(self.sample_date)
 
-	def should_payment_occur_today(self,datetime_object,check_cycles=55):
+	def should_payment_occur_today(self,datetime_object,check_cycles=300):
 		"""
 		Given a datetime object determine if this transaction
 		would have occurred on a given date
@@ -149,6 +149,8 @@ class Transaction(object):
 		TODO: to fix this the self.sample_date should update when this returns true.
 		:param check_cycles: number of occurrences (in weeks) to check in either direction from sample date 
 		"""
+
+		start = datetime.datetime.now()
 
 		cycles = range(check_cycles)
 		dtc = datetime_object.day
@@ -163,12 +165,20 @@ class Transaction(object):
 			if ((backward.day == dtc)
 			and (backward.month == mtc)
 			and (backward.year == ytc)):
+				logger.debug("Took: {} seconds".format(datetime.datetime.now() - start))
+				logger.debug("Found it on {}th occurence".format(occ))
+				self.sample_date = backward
 				return True
 			elif (forward.day == dtc) and (forward.month == mtc) and (forward.year == ytc):
+				logger.debug("Took: {} seconds".format(datetime.datetime.now() - start))
+				logger.debug("Found it on {}th occurence".format(occ))
+				self.sample_date = forward
 				return True
 			else:
 				continue
 
+		# logger.error("Took: {} seconds".format(datetime.datetime.now() - start))
+		# logger.error("Never found it checked up to {}th occurence".format(occ))
 		return False
 
 
@@ -217,7 +227,7 @@ for row in rows:
 
 
 # TODO make this a command line argument beloved
-DAYS_TO_PROJECT = 50
+DAYS_TO_PROJECT = 500
 now = datetime.datetime.now()
 tings2plot = []
 days = range(DAYS_TO_PROJECT)
