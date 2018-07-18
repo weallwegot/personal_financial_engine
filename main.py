@@ -1,4 +1,5 @@
 import datetime
+import argparse
 from dateutil import parser
 import os
 import pandas as pd
@@ -8,6 +9,10 @@ from bokeh.plotting import figure, output_file, show
 from definitions import ROOT_DIR, Q_, CHECKING, CREDIT, VALID_ACCT_TYPES
 
 import logging
+
+argparser = argparse.ArgumentParser(description='Forecasting acoount balance based on budget.')
+argparser.add_argument('--forecast','-f', required=True, type=int, help='how many days to forecast account balances')
+args = argparser.parse_args()
 
 logger = logging.getLogger('finance_app')
 logger.setLevel(logging.DEBUG)
@@ -138,25 +143,42 @@ class Transaction(object):
 
 		self.sample_date = parser.parse(self.sample_date)
 
-	def should_payment_occur_today(self,datetime_object,check_cycles=300):
+	def should_payment_occur_today(self,datetime_object,check_cycles=1):
 		"""
 		Given a datetime object determine if this transaction
 		would have occurred on a given date
 		function does some math based on the sample date provided
 		and the frequency indicated
 		TODO: this is slow and inefficient
-		TODO: this will also break after you get outside the check_cycles window from the sample date.
-		TODO: to fix this the self.sample_date should update when this returns true.
+		TODO: intelligent update check_cycle based on sample date and datetime_object
 		:param check_cycles: number of occurrences (in weeks) to check in either direction from sample date 
 		"""
-
-		start = datetime.datetime.now()
 
 		cycles = range(check_cycles)
 		dtc = datetime_object.day
 		mtc = datetime_object.month
 		ytc = datetime_object.year
 
+		time_delta = datetime_object - self.sample_date
+		"""
+		if there is more time between the sample date and current simulated day (datetime_obj) 
+		than would be reachable within the check_cycles of frequency
+		then update the sample_date to be further in the future
+		"""
+		# frequency is a quantity with units so update weeks to days before comparing integers
+		range_of_time_reachable = (self.frequency*check_cycles).to('days')
+		while abs(time_delta.days) > range_of_time_reachable.magnitude:
+			# if time_delta days is positive, then the sample date is too far in the past, step forward
+			if time_delta.days > 0:
+				self.sample_date += range_of_time_reachable
+
+			# if time_delta days is negative, then the sample date is too far in the future, step backwards
+			elif time_delta.days < 0:
+				self.sample_date -= range_of_time_reachable
+			# update time_delta with new sample date
+			time_delta = datetime_object - self.sample_date
+
+		# TODO: this for loop is likely not needed anymore, avoiding refactoring until unit tests are set up
 		for occ in cycles:
 
 			forward = self.sample_date + self.frequency*occ
@@ -165,20 +187,18 @@ class Transaction(object):
 			if ((backward.day == dtc)
 			and (backward.month == mtc)
 			and (backward.year == ytc)):
-				logger.debug("Took: {} seconds".format(datetime.datetime.now() - start))
 				logger.debug("Found it on {}th occurence".format(occ))
+				# update the sample date such that it always stays close to the simulated day
 				self.sample_date = backward
 				return True
 			elif (forward.day == dtc) and (forward.month == mtc) and (forward.year == ytc):
-				logger.debug("Took: {} seconds".format(datetime.datetime.now() - start))
 				logger.debug("Found it on {}th occurence".format(occ))
+				# update the sample date such that it always stays close to the simulated day
 				self.sample_date = forward
 				return True
 			else:
 				continue
 
-		# logger.error("Took: {} seconds".format(datetime.datetime.now() - start))
-		# logger.error("Never found it checked up to {}th occurence".format(occ))
 		return False
 
 
@@ -227,7 +247,7 @@ for row in rows:
 
 
 # TODO make this a command line argument beloved
-DAYS_TO_PROJECT = 500
+DAYS_TO_PROJECT = args.forecast
 now = datetime.datetime.now()
 tings2plot = []
 days = range(DAYS_TO_PROJECT)
