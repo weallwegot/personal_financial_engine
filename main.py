@@ -5,8 +5,9 @@ import os
 import pandas as pd
 import pint
 from bokeh.plotting import figure, output_file, show
+from bokeh.models import HoverTool
 
-from definitions import ROOT_DIR, Q_, CHECKING, CREDIT, VALID_ACCT_TYPES
+from definitions import ROOT_DIR, Q_, CHECKING, CREDIT, VALID_ACCT_TYPES, TOOLTIPS, FOREVER_RECURRING
 
 import logging
 
@@ -21,7 +22,7 @@ fh = logging.FileHandler('finance_app.log')
 fh.setLevel(logging.DEBUG)
 # create console handler with a higher log level
 ch = logging.StreamHandler()
-ch.setLevel(logging.INFO)
+ch.setLevel(logging.ERROR)
 # create formatter and add it to the handlers
 formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
 fh.setFormatter(formatter)
@@ -33,7 +34,7 @@ logger.addHandler(ch)
 # read in a dataframe that defines all the recurring money transaction
 # money_df = pd.read_csv(os.path.join(ROOT_DIR,'data',"money_io.csv"))
 money_df = pd.read_csv(os.path.join(ROOT_DIR,'data',"test_budget.csv"))
-accounts_df = pd.read_csv(os.path.join(ROOT_DIR,'data',"sample_account_info.csv"))
+accounts_df = pd.read_csv(os.path.join(ROOT_DIR,'data',"my_account_info.csv"))
 # print str(money_df)
 
 class Account(object):
@@ -120,7 +121,7 @@ class Account(object):
 
 class Transaction(object):
 
-	def __init__(self,f,a,t,d,sd,sc):
+	def __init__(self,f,a,t,d,sd,sc,u):
 		# change to have the units recognized by pint and the + as a mathematical operation
 		self.frequency = f
 		self.amount = a
@@ -128,7 +129,11 @@ class Transaction(object):
 		self.description = d
 		self.sample_date = sd
 		self.source = sc
+		self.until_date = u
 		self._parse_attributes()
+
+	def __repr__(self):
+		return self.description
 
 	def _parse_attributes(self):
 
@@ -142,6 +147,13 @@ class Transaction(object):
 		self.frequency = Q_(self.frequency.replace('d','day').replace('w','week').replace(' ','+')).to('week')
 
 		self.sample_date = parser.parse(self.sample_date)
+
+		try:
+			self.until_date = parser.parse(self.until_date)
+		except TypeError:
+			self.until_date = FOREVER_RECURRING
+
+
 
 	def should_payment_occur_today(self,datetime_object,check_cycles=1):
 		"""
@@ -233,6 +245,7 @@ for row in rows:
 	tx_type = row.Type
 	samp_d = row.Sample_Date
 	src = row.Source
+	until = row.Until
 
 	tx = Transaction(
 		f=freq,
@@ -240,7 +253,8 @@ for row in rows:
 		t=tx_type,
 		d=desc,
 		sd=samp_d,
-		sc=src)
+		sc=src,
+		u=until)
 	# print tx.frequency
 	txs_list.append(tx)
 
@@ -255,23 +269,32 @@ days = range(DAYS_TO_PROJECT)
 acct_lines = {}
 # This the actual simulation running through days
 for day in days:
+	# use units to add one day per iteration
 	simulated_day = now + Q_(day,'day')
+	# loop through all the available transactions
 	for tx in txs_list:
+		# determine if a transaction should occur on simulated day
 		if tx.should_payment_occur_today(simulated_day):
 			logger.debug("Paying {} Today\nSample Date: {}\nSimulated Day:{}\n"
 				.format(tx.description,tx.sample_date,simulated_day))
 
 			logger.debug("From Acct: {}".format(tx.source))
 
+			# attempt to grab the account that the transactions is coming from or into or both.
 			try:
 				acct_obj = accts_dict[tx.source]
 			except KeyError:
 				raise KeyError("Transaction Source {} is not an account in {}"
 					.format(tx.source,accts_dict.keys()))
-			
+			# take the money from the account it is coming from
 			acct_obj.process_tx(tx)
+
+	# update transaction list to only include ones that are forevor recurring
+	txs_list = [tx for tx in txs_list if tx.until_date == FOREVER_RECURRING or tx.until_date > simulated_day]
+
 	# check all the accounts and see if its a payoff date
 	for acct_obj in accts_dict.values():
+		# only credit accounts can get paid off
 		if acct_obj.acct_type == CREDIT and simulated_day.day == acct_obj.payback_date:
 			try:
 				payback_src_acct = accts_dict[acct_obj.payback_src]
@@ -308,7 +331,12 @@ for day in days:
 
 
 # create a new plot with a datetime axis type
-p = figure(width=800, height=250, x_axis_type="datetime")
+
+
+
+p = figure(width=800, height=250, x_axis_type="datetime",tooltips=TOOLTIPS)
+
+
 
 
 for act_name,act_line in acct_lines.items():
@@ -321,13 +349,18 @@ for act_name,act_line in acct_lines.items():
 
 
 # p.line([x[0] for x in tings2plot],[x[1].magnitude for x in tings2plot])
-
+hover = p.select(dict(type=HoverTool))
+hover.tooltips = TOOLTIPS
+hover.mode = 'vline'
 show(p)
 
 
 
-p_total = figure(width=800, height=250, x_axis_type="datetime")
+p_total = figure(width=800, height=250, x_axis_type="datetime",tooltips=TOOLTIPS)
 p_total.line([x[0] for x in tings2plot],[x[1].magnitude for x in tings2plot],color='blue',legend='total balance')
+hover = p_total.select(dict(type=HoverTool))
+hover.tooltips = TOOLTIPS
+hover.mode = 'vline'
 show(p_total)
 
 
