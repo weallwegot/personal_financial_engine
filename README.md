@@ -6,26 +6,28 @@ program to forecast the amount of money youll have at a certain date
 
 #### *A budget*
 
-|                      |          |            |           |       |             |             |  | 
-|----------------------|----------|------------|-----------|-------|-------------|-------------|--| 
-| Description          | Amount   | Occurrence | Type      | Until | Sample_Date | Source      |  | 
-| Rent                 | $780.00  | 4w 2d      | Deduction |       | 4/1/18      | WF_Checking |  | 
-| Car Payment          | $300.00  | 4w 2d      | Deduction |       | 3/15/18     | WF_Checking |  | 
-| School Loans         | $450.00  | 4w 2d      | Deduction |       | 2/11/18     | WF_Checking |  | 
-| Cell Phone Bill      | $60.00   | 4w 2d      | Deduction |       | 3/1/18      | WF_Checking |  | 
-| Car Insurance        | $150.00  | 4w 2d      | Deduction |       | 3/4/18      | WF_Checking |  | 
-| Gym Membership       | $30.00   | 4w 2d      | Deduction |       | 4/2/18      | WF_Checking |  | 
-| Amazon Prime Student | $49.00   | 52w 1d     | Deduction |       | 5/18/17     | WF_Checking |  | 
-| HBO thru Amazon      | $15.00   | 4w 2d      | Deduction |       | 6/19/17     | WF_Checking |  | 
-| Apple Music          | $15.99   | 4w 2d      | Deduction |       | 3/1/18      | WF_Checking |  | 
-| iCloud Storage       | $1.99    | 4w 2d      | Deduction |       | 3/2/18      | WF_Checking |  | 
-| Electricity Bill     | $60.00   | 4w 2d      | Deduction |       | 1/14/17     | CitiCredit  |  | 
-| Locs Retwist         | $100.00  | 4w 2d      | Deduction |       | 4/1/17      | WF_Credit   |  | 
-| Hair cut             | $30.00   | 2w 1d      | Deduction |       | 6/1/18      | CitiCredit  |  | 
-| Groceries            | $65.00   | 4w 2d      | Deduction |       | 2/22/18     | CitiCredit  |  | 
-| Eating Out           | $50.00   | 1w         | Deduction |       | 4/11/18     | CitiCredit  |  | 
-| Gas for Car          | $40.00   | 3w         | Deduction |       | 4/1/18      | CitiCredit  |  | 
-| My Paycheck          | $1500.00 | 2w         | Payment   |       | 4/16/18     | WF_Checking |  | 
+|                      |          |            |           |             |             |         | 
+|----------------------|----------|------------|-----------|-------------|-------------|---------| 
+| Description          | Amount   | Occurrence | Type      | Sample_Date | Source      | Until   | 
+| Rent                 | $780.00  | 30d        | Deduction | 4/1/18      | WF_Checking |         | 
+| Car Payment          | $300.00  | 30d        | Deduction | 3/15/18     | WF_Checking |         | 
+| School Loans         | $450.00  | 30d        | Deduction | 2/11/18     | WF_Checking |         | 
+| Cell Phone Bill      | $60.00   | 30d        | Deduction | 3/1/18      | WF_Checking |         | 
+| Car Insurance        | $150.00  | 30d        | Deduction | 3/4/18      | WF_Checking |         | 
+| Gym Membership       | $30.00   | 30d        | Deduction | 4/2/18      | WF_Checking |         | 
+| Amazon Prime Student | $49.00   | 365d       | Deduction | 5/18/17     | WF_Checking |         | 
+| HBO thru Amazon      | $15.00   | 4w 2d      | Deduction | 6/19/17     | WF_Checking |         | 
+| Apple Music          | $15.99   | 4w 2d      | Deduction | 3/1/18      | WF_Checking |         | 
+| iCloud Storage       | $1.99    | 4w 2d      | Deduction | 3/2/18      | WF_Checking |         | 
+| Electricity Bill     | $60.00   | 4w 2d      | Deduction | 1/14/17     | CitiCredit  |         | 
+| Locs Retwist         | $100.00  | 4w 2d      | Deduction | 4/1/17      | WF_Credit   |         | 
+| Hair cut             | $30.00   | 2w 1d      | Deduction | 6/1/18      | CitiCredit  |         | 
+| Groceries            | $65.00   | 30d        | Deduction | 2/22/18     | CitiCredit  |         | 
+| Eating Out           | $50.00   | 1w         | Deduction | 4/11/18     | CitiCredit  |         | 
+| Gas for Car          | $40.00   | 3w         | Deduction | 4/1/18      | CitiCredit  |         | 
+| School Applications  | $295.00  | 4w         | Deduction | 7/18/18     | WF_Checking | 8/18/18 | 
+| My Paycheck          | $1500.00 | 2w         | Payment   | 4/16/18     | WF_Checking |         | 
+
 
 
 #### *Starting Point for Accounts*
@@ -55,7 +57,8 @@ Its still pretty early but if you have suggestions, thoughts, feedback, criticis
 
 Thanks in advance :blush:
 
-& Thanks to [this nifty tool](https://donatstudios.com/CsvToMarkdownTable) for csv -> markdown made easy.
+& Thanks to [this nifty tool](https://donatstudio
+.com/CsvToMarkdownTable) for csv -> markdown made easy.
 
 --------------------------------------------------------------------------
 
