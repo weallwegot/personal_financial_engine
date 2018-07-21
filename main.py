@@ -7,7 +7,9 @@ import pint
 from bokeh.plotting import figure, output_file, show
 from bokeh.models import HoverTool
 
-from definitions import ROOT_DIR, Q_, CHECKING, CREDIT, VALID_ACCT_TYPES, TOOLTIPS, FOREVER_RECURRING
+from definitions import ROOT_DIR, Q_, CHECKING, CREDIT, TOOLTIPS, FOREVER_RECURRING
+
+from fihnance import account, transaction
 
 import logging
 
@@ -32,186 +34,8 @@ logger.addHandler(fh)
 logger.addHandler(ch)
 
 # read in a dataframe that defines all the recurring money transaction
-# money_df = pd.read_csv(os.path.join(ROOT_DIR,'data',"money_io.csv"))
 money_df = pd.read_csv(os.path.join(ROOT_DIR,'data',"test_budget.csv"))
-accounts_df = pd.read_csv(os.path.join(ROOT_DIR,'data',"my_account_info.csv"))
-# print str(money_df)
-
-class Account(object):
-	def __init__(self,name,bal,acct_type,payback_date=None,payback_src=None,credit_limit=None):
-		self.name = name
-		self.balance = Q_(float(bal.replace('$','')),'usd')
-		self.acct_type = acct_type.upper()
-		self.payback_date = payback_date
-		self.payback_src = payback_src
-
-		self.credit_limit = credit_limit
-		self._validate()
-
-	def __repr__(self):
-		return "{}: {}".format(self.name, self.balance)
-
-	def _validate(self):
-		if self.acct_type not in VALID_ACCT_TYPES:
-			raise ValueError('What is this account type? {}\nMust be checking or credit'
-				.format(self.acct_type))
-		if self.acct_type == CREDIT:
-			self.balance = self.balance*(-1.0)
-
-			if 28 > int(self.payback_date) > 0:
-				self.payback_date = int(self.payback_date)
-
-			self.credit_limit = Q_(float(self.credit_limit.replace('$','')),'usd')
-
-	def process_tx(self,amount_extractable_obj):
-
-		"""
-		figure out which attribute the amount is stored in
-		if its a transaction object use the amount attribute
-		if its an account object then use the balance attribute
-		"""
-		if hasattr(amount_extractable_obj,'amount'):
-			amount = amount_extractable_obj.amount
-		elif hasattr(amount_extractable_obj,'balance'):
-			amount = amount_extractable_obj.balance
-
-		self.balance += amount
-		if self.acct_type == CREDIT:
-			bal_credit_ratio = round(abs(self.balance/self.credit_limit)*100.,1)
-			if bal_credit_ratio > 20:
-				logger.info("{}\nbe careful, you're debt/limit ratio is {}%\n\
-					anything over 20% may hurt your credit score."
-					.format(self,bal_credit_ratio))
-
-		elif self.acct_type == CHECKING:
-			if self.balance < Q_(0,'usd'):
-				logger.info("{} has just overdrafted.".format(self))
-
-		# check if balance is an attribute, and update it
-
-		if hasattr(amount_extractable_obj,"balance"):
-
-			# don't just set to 0.0 because future functionality might pay a fraction of balance
-			amount_extractable_obj.balance -= amount
-
-			logger.debug("credit account {} was paid off".
-				format(amount_extractable_obj))
-
-	def payoff_credit_acct(self,account_object):
-		"""
-		modify the account_object by paying off its balance
-		"""
-
-		if account_object.acct_type == CREDIT:
-
-			if self.acct_type == CHECKING:
-				self.process_tx(account_object)
-
-			else:
-				logger.warning("Need to payoff_credt_acct with a checking account.\
-					Skipping this operation.")
-				return
-
-		else:
-			logger.warning("Cannot payoff_credit_acct with {} type acct.\n\
-				skipping this operation."
-				.format(account_object.acct_type))
-			return
-
-
-class Transaction(object):
-
-	def __init__(self,f,a,t,d,sd,sc,u):
-		# change to have the units recognized by pint and the + as a mathematical operation
-		self.frequency = f
-		self.amount = a
-		self.transaction_type = t
-		self.description = d
-		self.sample_date = sd
-		self.source = sc
-		self.until_date = u
-		self._parse_attributes()
-
-	def __repr__(self):
-		return self.description
-
-	def _parse_attributes(self):
-
-		self.amount = Q_(float(self.amount.replace('$','')),'usd')
-
-		if self.transaction_type.lower() == 'deduction':
-			self.amount = self.amount*(-1.0)
-		elif self.transaction_type.lower() == 'payment':
-			pass
-
-		self.frequency = Q_(self.frequency.replace('d','day').replace('w','week').replace(' ','+')).to('week')
-
-		self.sample_date = parser.parse(self.sample_date)
-
-		try:
-			self.until_date = parser.parse(self.until_date)
-		except TypeError:
-			self.until_date = FOREVER_RECURRING
-
-
-
-	def should_payment_occur_today(self,datetime_object,check_cycles=1):
-		"""
-		Given a datetime object determine if this transaction
-		would have occurred on a given date
-		function does some math based on the sample date provided
-		and the frequency indicated
-		TODO: this is slow and inefficient
-		TODO: intelligent update check_cycle based on sample date and datetime_object
-		:param check_cycles: number of occurrences (in weeks) to check in either direction from sample date 
-		"""
-
-		cycles = range(check_cycles)
-		dtc = datetime_object.day
-		mtc = datetime_object.month
-		ytc = datetime_object.year
-
-		time_delta = datetime_object - self.sample_date
-		"""
-		if there is more time between the sample date and current simulated day (datetime_obj) 
-		than would be reachable within the check_cycles of frequency
-		then update the sample_date to be further in the future
-		"""
-		# frequency is a quantity with units so update weeks to days before comparing integers
-		range_of_time_reachable = (self.frequency*check_cycles).to('days')
-		while abs(time_delta.days) > range_of_time_reachable.magnitude:
-			# if time_delta days is positive, then the sample date is too far in the past, step forward
-			if time_delta.days > 0:
-				self.sample_date += range_of_time_reachable
-
-			# if time_delta days is negative, then the sample date is too far in the future, step backwards
-			elif time_delta.days < 0:
-				self.sample_date -= range_of_time_reachable
-			# update time_delta with new sample date
-			time_delta = datetime_object - self.sample_date
-
-		# TODO: this for loop is likely not needed anymore, avoiding refactoring until unit tests are set up
-		for occ in cycles:
-
-			forward = self.sample_date + self.frequency*occ
-			backward = self.sample_date - self.frequency*occ
-
-			if ((backward.day == dtc)
-			and (backward.month == mtc)
-			and (backward.year == ytc)):
-				logger.debug("Found it on {}th occurence".format(occ))
-				# update the sample date such that it always stays close to the simulated day
-				self.sample_date = backward
-				return True
-			elif (forward.day == dtc) and (forward.month == mtc) and (forward.year == ytc):
-				logger.debug("Found it on {}th occurence".format(occ))
-				# update the sample date such that it always stays close to the simulated day
-				self.sample_date = forward
-				return True
-			else:
-				continue
-
-		return False
+accounts_df = pd.read_csv(os.path.join(ROOT_DIR,'data',"sample_account_info.csv"))
 
 
 # Initialize Account Objects
@@ -225,7 +49,7 @@ for acct in acct_rows:
 	paysrc = acct.PayoffSource
 	climit = acct.CreditLimit
 
-	accts_dict[acctname] = Account(
+	accts_dict[acctname] = account.Account(
 		name=acctname,
 		bal=bal,
 		acct_type=acct_type,
@@ -247,7 +71,7 @@ for row in rows:
 	src = row.Source
 	until = row.Until
 
-	tx = Transaction(
+	tx = transaction.Transaction(
 		f=freq,
 		a=amt,
 		t=tx_type,
@@ -255,12 +79,8 @@ for row in rows:
 		sd=samp_d,
 		sc=src,
 		u=until)
-	# print tx.frequency
 	txs_list.append(tx)
 
-
-
-# TODO make this a command line argument beloved
 DAYS_TO_PROJECT = args.forecast
 now = datetime.datetime.now()
 tings2plot = []
@@ -305,18 +125,12 @@ for day in days:
 			# this function modifies both accounts in place
 			payback_src_acct.payoff_credit_acct(acct_obj)
 
-
-
-
-
 	logger.info("Day: {}".format(simulated_day))
 	logger.info("Amount: {}".format(accts_dict.values()))
 
 	# for an overall balance measure
 	curr_amt = sum([acc.balance for acc in accts_dict.values()])
 	myliltuple = (simulated_day,curr_amt)
-
-
 
 	for act in accts_dict.values():
 		currtuple = (simulated_day,act.balance)
@@ -325,19 +139,11 @@ for day in days:
 		else:
 			acct_lines[act.name] = [currtuple]
 
-
 	# update the overall balance across all accounts
 	tings2plot.append(myliltuple)
 
-
 # create a new plot with a datetime axis type
-
-
-
 p = figure(width=800, height=250, x_axis_type="datetime",tooltips=TOOLTIPS)
-
-
-
 
 for act_name,act_line in acct_lines.items():
 	# make a line of x,y values for each account
@@ -347,14 +153,11 @@ for act_name,act_line in acct_lines.items():
 
 	p.line([x[0] for x in act_line],[x[1].magnitude for x in act_line],color=clr,legend=act_name)
 
-
 # p.line([x[0] for x in tings2plot],[x[1].magnitude for x in tings2plot])
 hover = p.select(dict(type=HoverTool))
 hover.tooltips = TOOLTIPS
 hover.mode = 'vline'
 show(p)
-
-
 
 p_total = figure(width=800, height=250, x_axis_type="datetime",tooltips=TOOLTIPS)
 p_total.line([x[0] for x in tings2plot],[x[1].magnitude for x in tings2plot],color='blue',legend='total balance')
@@ -362,11 +165,4 @@ hover = p_total.select(dict(type=HoverTool))
 hover.tooltips = TOOLTIPS
 hover.mode = 'vline'
 show(p_total)
-
-
-
-
-
-
-
 
