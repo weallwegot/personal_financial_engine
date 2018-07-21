@@ -15,6 +15,9 @@ import logging
 
 argparser = argparse.ArgumentParser(description='Forecasting acoount balance based on budget.')
 argparser.add_argument('--forecast','-f', required=True, type=int, help='how many days to forecast account balances')
+argparser.add_argument('--money','-m', required=True, type=str, help='csv file with transaction specifications')
+argparser.add_argument('--account','-a', required=True, type=str, help='csv file with account balances')
+
 args = argparser.parse_args()
 
 logger = logging.getLogger('finance_app')
@@ -24,7 +27,7 @@ fh = logging.FileHandler('finance_app.log')
 fh.setLevel(logging.DEBUG)
 # create console handler with a higher log level
 ch = logging.StreamHandler()
-ch.setLevel(logging.ERROR)
+ch.setLevel(logging.INFO)
 # create formatter and add it to the handlers
 formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
 fh.setFormatter(formatter)
@@ -34,8 +37,9 @@ logger.addHandler(fh)
 logger.addHandler(ch)
 
 # read in a dataframe that defines all the recurring money transaction
-money_df = pd.read_csv(os.path.join(ROOT_DIR,'data',"test_budget.csv"))
-accounts_df = pd.read_csv(os.path.join(ROOT_DIR,'data',"sample_account_info.csv"))
+money_df = pd.read_csv(args.money)
+# read in dataframe that contains account information
+accounts_df = pd.read_csv(args.account)
 
 
 # Initialize Account Objects
