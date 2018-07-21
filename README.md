@@ -42,8 +42,15 @@ program to forecast the amount of money youll have at a certain date
 
 
 
-
 ## Output
+
+just run the following from the root directory:
+
+`python main.py -m data/test_budget.csv -a data/sample_account_info.csv -f 60`
+
+- f is for forecast and indicates the number of days to project into the future (f for forecast).
+- m is the path to the your csv that contains your data (m for money)
+- a is argument for the path to your simple account info (a for account).
 
 
 <img width="817" alt="screen shot 2018-07-17 at 2 28 10 am" src="https://user-images.githubusercontent.com/13176059/42800327-5a6497b8-8969-11e8-9d76-9d177b388a37.png">
