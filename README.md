@@ -53,7 +53,7 @@ just run the following from the root directory:
 - a is argument for the path to your simple account info (a for account).
 
 
-<img width="817" alt="screen shot 2018-07-17 at 2 28 10 am" src="https://user-images.githubusercontent.com/13176059/42800327-5a6497b8-8969-11e8-9d76-9d177b388a37.png">
+<img width="817" alt="account balances over time" src="https://user-images.githubusercontent.com/13176059/42800327-5a6497b8-8969-11e8-9d76-9d177b388a37.png">
 
 
 
