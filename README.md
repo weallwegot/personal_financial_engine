@@ -64,8 +64,7 @@ Its still pretty early but if you have suggestions, thoughts, feedback, criticis
 
 Thanks in advance :blush:
 
-& Thanks to [this nifty tool](https://donatstudio
-.com/CsvToMarkdownTable) for csv -> markdown made easy.
+& Thanks to [this nifty tool](https://donatstudio.com/CsvToMarkdownTable) for csv -> markdown made easy.
 
 --------------------------------------------------------------------------
 
