@@ -6,38 +6,38 @@ program to forecast the amount of money youll have at a certain date
 
 #### *A budget*
 
-|                      |          |            |           |             |             |         | 
-|----------------------|----------|------------|-----------|-------------|-------------|---------| 
-| Description          | Amount   | Occurrence | Type      | Sample_Date | Source      | Until   | 
-| Rent                 | $780.00  | 30d        | Deduction | 4/1/18      | WF_Checking |         | 
-| Car Payment          | $300.00  | 30d        | Deduction | 3/15/18     | WF_Checking |         | 
-| School Loans         | $450.00  | 30d        | Deduction | 2/11/18     | WF_Checking |         | 
-| Cell Phone Bill      | $60.00   | 30d        | Deduction | 3/1/18      | WF_Checking |         | 
-| Car Insurance        | $150.00  | 30d        | Deduction | 3/4/18      | WF_Checking |         | 
-| Gym Membership       | $30.00   | 30d        | Deduction | 4/2/18      | WF_Checking |         | 
-| Amazon Prime Student | $49.00   | 365d       | Deduction | 5/18/17     | WF_Checking |         | 
-| HBO thru Amazon      | $15.00   | 4w 2d      | Deduction | 6/19/17     | WF_Checking |         | 
-| Apple Music          | $15.99   | 4w 2d      | Deduction | 3/1/18      | WF_Checking |         | 
-| iCloud Storage       | $1.99    | 4w 2d      | Deduction | 3/2/18      | WF_Checking |         | 
-| Electricity Bill     | $60.00   | 4w 2d      | Deduction | 1/14/17     | CitiCredit  |         | 
-| Locs Retwist         | $100.00  | 4w 2d      | Deduction | 4/1/17      | WF_Credit   |         | 
-| Hair cut             | $30.00   | 2w 1d      | Deduction | 6/1/18      | CitiCredit  |         | 
-| Groceries            | $65.00   | 30d        | Deduction | 2/22/18     | CitiCredit  |         | 
-| Eating Out           | $50.00   | 1w         | Deduction | 4/11/18     | CitiCredit  |         | 
-| Gas for Car          | $40.00   | 3w         | Deduction | 4/1/18      | CitiCredit  |         | 
-| School Applications  | $295.00  | 4w         | Deduction | 7/18/18     | WF_Checking | 8/18/18 | 
-| My Paycheck          | $1500.00 | 2w         | Payment   | 4/16/18     | WF_Checking |         | 
+|                      |          |            |           |             |                           |         | 
+|----------------------|----------|------------|-----------|-------------|---------------------------|---------| 
+| Description          | Amount   | Occurrence | Type      | Sample_Date | Source                    | Until   | 
+| Rent                 | $780.00  | 4w 2d      | Deduction | 4/1/18      | Chase Saphire Credit Card |         | 
+| Car Payment          | $300.00  | 4w 2d      | Deduction | 3/15/18     | Chase Saphire Credit Card |         | 
+| School Loans         | $450.00  | 4w 2d      | Deduction | 2/11/18     | Chase Saphire Credit Card |         | 
+| Cell Phone Bill      | $60.00   | 4w 2d      | Deduction | 3/1/18      | Chase Checking Account    |         | 
+| Car Insurance        | $150.00  | 4w 2d      | Deduction | 3/4/18      | Chase Checking Account    |         | 
+| Gym Membership       | $30.00   | 4w 2d      | Deduction | 4/2/18      | Chase Saphire Credit Card |         | 
+| Amazon Prime Student | $49.00   | 52w 1d     | Deduction | 5/18/17     | Chase Saphire Credit Card |         | 
+| HBO thru Amazon      | $15.00   | 4w 2d      | Deduction | 6/19/17     | Chase Checking Account    |         | 
+| Apple Music          | $15.99   | 4w 2d      | Deduction | 3/1/18      | Chase Saphire Credit Card |         | 
+| iCloud Storage       | $1.99    | 4w 2d      | Deduction | 3/2/18      | Chase Saphire Credit Card |         | 
+| Electricity Bill     | $60.00   | 4w 2d      | Deduction | 1/14/17     | Amex Delta Card           |         | 
+| Locs Retwist         | $100.00  | 4w 2d      | Deduction | 4/1/17      | Chase Checking Account    |         | 
+| Hair cut             | $30.00   | 2w 1d      | Deduction | 6/1/18      | Amex Delta Card           |         | 
+| Groceries            | $65.00   | 4w 2d      | Deduction | 2/22/18     | Amex Delta Card           |         | 
+| Eating Out           | $50.00   | 1w         | Deduction | 4/11/18     | Amex Delta Card           |         | 
+| Gas for Car          | $40.00   | 3w         | Deduction | 4/1/18      | Amex Delta Card           |         | 
+| School Applications  | $195.00  | 15d        | Deduction | 7/18/18     | Chase Saphire Credit Card | 8/18/18 | 
+| My Paycheck          | $1890.00 | 2w         | Payment   | 4/16/18     | Chase Checking Account    |         | 
 
 
 
 #### *Starting Point for Accounts*
 
-|             |         |          |           |              |             | 
-|-------------|---------|----------|-----------|--------------|-------------| 
-| AccountName | Balance | Type     | PayoffDay | PayoffSource | CreditLimit | 
-| WF_Checking | $100    | Checking | N/A       | N/A          | N/A         | 
-| WF_Credit   | $20     | Credit   | 3         | WF_Checking  | $3000       | 
-| CitiCredit  | $500    | Credit   | 15        | WF_Checking  | $10000      | 
+|                           |         |          |           |                        |             | 
+|---------------------------|---------|----------|-----------|------------------------|-------------| 
+| AccountName               | Balance | Type     | PayoffDay | PayoffSource           | CreditLimit | 
+| Chase Checking Account    | $450    | Checking | N/A       | N/A                    | N/A         | 
+| Amex Delta Card           | $20     | Credit   | 3         | Chase Checking Account | $3000       | 
+| Chase Saphire Credit Card | $500    | Credit   | 15        | Chase Checking Account | $10000      | 
 
 
 
@@ -63,8 +63,7 @@ Its still pretty early but if you have suggestions, thoughts, feedback, criticis
 
 Thanks in advance :blush:
 
-& Thanks to [this nifty tool](https://donatstudio
-.com/CsvToMarkdownTable) for csv -> markdown made easy.
+& Thanks to [this nifty tool](https://donatstudio.com/CsvToMarkdownTable) for csv -> markdown made easy.
 
 --------------------------------------------------------------------------
 
