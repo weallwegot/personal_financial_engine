@@ -1,4 +1,4 @@
 AccountName,Balance,Type,PayoffDay,PayoffSource,CreditLimit
-WF_Checking,$100,Checking,N/A,N/A,N/A
-WF_Credit,$20,Credit,3,WF_Checking,$3000
-CitiCredit,$500,Credit,15,WF_Checking,$10000
+Chase Checking Account,$450,Checking,N/A,N/A,N/A
+Amex Delta Card,$20,Credit,3,Chase Checking Account,$3000
+Chase Saphire Credit Card,$500,Credit,15,Chase Checking Account,$10000
