@@ -157,7 +157,7 @@ for day in days:
 		acct_names.append(acc.name)
 
 	# create a row to concatenate to dataframe
-	datalist = [simulated_day,str(txs_occurring_today)]
+	datalist = [simulated_day,txs_occurring_today]
 	col_list = ['date','transactions']
 	# extend modifies list in place
 	datalist.extend(acct_data)
@@ -169,13 +169,36 @@ for day in days:
 	aggregate_df = aggregate_df.append(newrow,ignore_index=True)
 
 traces2plot = []
+# make money a float not a string
+def specify_txs(txs_tuples_list,account_name):
+	"""Reduce the original tuple list to only include transactions
+	that acorrespond to the account_name passed in
+	
+	Args:
+	    txs_tuples_list (string): string of list of tuples
+	    account_name (string): account name string
+	
+	Returns:
+	    str: string with transaction for a particular account only
+	"""
+
+	reduced_list_of_tuples = [tx_tuple for tx_tuple in txs_tuples_list if tx_tuple[1] == account_name]
+
+	logger.debug("\noriginal list of tuples\n {}\nAcct Name {}".format(txs_tuples_list,account_name))
+	logger.debug("\nreduced list of tuples! {}".format(reduced_list_of_tuples))
+
+	return str(reduced_list_of_tuples).replace('[','').replace(']','')
+
 # TODO: add a trace for the total, maybe
 for curract in accts_dict.keys():
+	acct_specific_txs = [specify_txs(tx,curract) for tx in aggregate_df['transactions']]
+	new_col_name = curract+'transactions'
+	aggregate_df[new_col_name] = acct_specific_txs
 	traceAcct = go.Scatter(x=aggregate_df['date']
 		,y=aggregate_df[curract].values,
 		mode='lines',
 		name=curract,
-		text=aggregate_df['transactions'])
+		text=aggregate_df[new_col_name])
 	traces2plot.append(traceAcct)
 
 
@@ -200,7 +223,6 @@ layout = go.Layout(
 )
 
 fig = go.Figure(data=traces2plot, layout=layout)
-
 pltly.plot(fig)
 
 
