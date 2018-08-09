@@ -4,10 +4,11 @@ from dateutil import parser
 import os
 import pandas as pd
 import pint
-from bokeh.plotting import figure, output_file, show
-from bokeh.models import HoverTool
 
-from definitions import ROOT_DIR, Q_, CHECKING, CREDIT, TOOLTIPS, FOREVER_RECURRING
+import plotly.offline as pltly
+import plotly.graph_objs as go
+
+from definitions import ROOT_DIR, Q_, CHECKING, CREDIT, FOREVER_RECURRING
 
 from fihnance import account, transaction
 
@@ -91,8 +92,10 @@ tings2plot = []
 days = range(DAYS_TO_PROJECT)
 
 acct_lines = {}
+aggregate_df = pd.DataFrame()
 # This the actual simulation running through days
 for day in days:
+	txs_occurring_today = []
 	# use units to add one day per iteration
 	simulated_day = now + Q_(day,'day')
 	# loop through all the available transactions
@@ -112,8 +115,22 @@ for day in days:
 					.format(tx.source,accts_dict.keys()))
 			# take the money from the account it is coming from
 			acct_obj.process_tx(tx)
+			# track the transactions that happened today
+			txs_occurring_today.append((tx.description,tx.source))
 
-	# update transaction list to only include ones that are forevor recurring
+
+
+	# update transaction list to only include ones that are forever recurring
+	"""
+	Update transaction list
+	This is important bc of the "until_date" attribute.
+	If the current simulated day is past the until date,
+	then the transaction should no longer be processed in the future.
+	TODO: move this logic into transaction object itself.
+	A method that takes a datetime object and compares it to 
+	its until_date attribute and returns a boolean of 
+	[tx for tx in txs_list if tx.is_active(simulated_day)]
+	"""
 	txs_list = [tx for tx in txs_list if tx.until_date == FOREVER_RECURRING or tx.until_date > simulated_day]
 
 	# check all the accounts and see if its a payoff date
@@ -132,41 +149,89 @@ for day in days:
 	logger.info("Day: {}".format(simulated_day))
 	logger.info("Amount: {}".format(accts_dict.values()))
 
-	# for an overall balance measure
-	curr_amt = sum([acc.balance for acc in accts_dict.values()])
-	myliltuple = (simulated_day,curr_amt)
 
-	for act in accts_dict.values():
-		currtuple = (simulated_day,act.balance)
-		if act.name in acct_lines.keys():
-			acct_lines[act.name].append(currtuple)
-		else:
-			acct_lines[act.name] = [currtuple]
+	acct_data = []
+	acct_names = []
+	for acc in accts_dict.values():
+		acct_data.append(acc.balance.magnitude)
+		acct_names.append(acc.name)
 
-	# update the overall balance across all accounts
-	tings2plot.append(myliltuple)
+	# create a row to concatenate to dataframe
+	datalist = [simulated_day,txs_occurring_today]
+	col_list = ['date','transactions']
+	# extend modifies list in place
+	datalist.extend(acct_data)
+	col_list.extend(acct_names)
+	newrow = pd.DataFrame([datalist]
+		,columns=col_list)
 
-# create a new plot with a datetime axis type
-p = figure(width=800, height=250, x_axis_type="datetime",tooltips=TOOLTIPS)
+	# pandas dataframe append method returns a dataframe (vs. list append which modifies in place)
+	aggregate_df = aggregate_df.append(newrow,ignore_index=True)
 
-for act_name,act_line in acct_lines.items():
-	# make a line of x,y values for each account
-	clr = 'red'
-	if accts_dict[act_name].acct_type == CHECKING:
-		clr = 'green'
+traces2plot = []
+# make money a float not a string
+def specify_txs(txs_tuples_list,account_name):
+	"""Reduce the original tuple list to only include transactions
+	that acorrespond to the account_name passed in
+	
+	Args:
+	    txs_tuples_list (string): string of list of tuples
+	    account_name (string): account name string
+	
+	Returns:
+	    str: string with transaction for a particular account only
+	"""
 
-	p.line([x[0] for x in act_line],[x[1].magnitude for x in act_line],color=clr,legend=act_name)
+	reduced_list_of_tuples = [tx_tuple for tx_tuple in txs_tuples_list if tx_tuple[1] == account_name]
 
-# p.line([x[0] for x in tings2plot],[x[1].magnitude for x in tings2plot])
-hover = p.select(dict(type=HoverTool))
-hover.tooltips = TOOLTIPS
-hover.mode = 'vline'
-show(p)
+	logger.debug("\noriginal list of tuples\n {}\nAcct Name {}".format(txs_tuples_list,account_name))
+	logger.debug("\nreduced list of tuples! {}".format(reduced_list_of_tuples))
 
-p_total = figure(width=800, height=250, x_axis_type="datetime",tooltips=TOOLTIPS)
-p_total.line([x[0] for x in tings2plot],[x[1].magnitude for x in tings2plot],color='blue',legend='total balance')
-hover = p_total.select(dict(type=HoverTool))
-hover.tooltips = TOOLTIPS
-hover.mode = 'vline'
-show(p_total)
+	return str(reduced_list_of_tuples).replace('[','').replace(']','')
+
+# TODO: add a trace for the total, maybe
+for curract in accts_dict.keys():
+	acct_specific_txs = [specify_txs(tx,curract) for tx in aggregate_df['transactions']]
+	new_col_name = curract+'transactions'
+	aggregate_df[new_col_name] = acct_specific_txs
+	traceAcct = go.Scatter(x=aggregate_df['date']
+		,y=aggregate_df[curract].values,
+		mode='lines',
+		name=curract,
+		text=aggregate_df[new_col_name])
+	traces2plot.append(traceAcct)
+
+
+layout = go.Layout(
+    title='My Money',
+    xaxis=dict(
+        title='Date',
+        titlefont=dict(
+            family='Courier New, monospace',
+            size=18,
+            color='#7f7f7f'
+        )
+    ),
+    yaxis=dict(
+        title='Account Total ($)',
+        titlefont=dict(
+            family='Courier New, monospace',
+            size=18,
+            color='#7f7f7f'
+        )
+    )
+)
+
+fig = go.Figure(data=traces2plot, layout=layout)
+pltly.plot(fig)
+
+
+
+
+
+
+
+
+
+
 
