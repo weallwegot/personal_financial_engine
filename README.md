@@ -53,8 +53,7 @@ just run the following from the root directory:
 - a is argument for the path to your simple account info (a for account).
 
 
-<img width="817" alt="account balances over time" src="https://user-images.githubusercontent.com/13176059/42800327-5a6497b8-8969-11e8-9d76-9d177b388a37.png">
-
+![big_finance_tool_demo](https://user-images.githubusercontent.com/13176059/43878383-dbaf88e0-9b6c-11e8-9db4-6a2485b751cd.gif)
 
 
 
