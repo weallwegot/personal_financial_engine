@@ -1,6 +1,5 @@
 import datetime
 import argparse
-from dateutil import parser
 import os
 import pandas as pd
 import pint
@@ -223,7 +222,7 @@ layout = go.Layout(
 )
 
 fig = go.Figure(data=traces2plot, layout=layout)
-pltly.plot(fig)
+pltly.plot(figfilename='{}_money.html'.format(str(now)))
 
 
 
