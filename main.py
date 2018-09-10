@@ -86,7 +86,7 @@ for row in rows:
 	txs_list.append(tx)
 
 DAYS_TO_PROJECT = args.forecast
-now = datetime.datetime.now()
+now = datetime.datetime(month=8,year=2018,day=9)
 tings2plot = []
 days = range(DAYS_TO_PROJECT)
 
@@ -222,9 +222,11 @@ layout = go.Layout(
 )
 
 fig = go.Figure(data=traces2plot, layout=layout)
-pltly.plot(figfilename='{}_money.html'.format(str(now)))
 
+budget_name = args.money.replace('/','').replace('.csv','')
+pltly.plot(fig,filename='{}_money_{}.html'.format(str(now),budget_name))
 
+aggregate_df.to_csv('{}_money_{}.csv'.format(str(now),budget_name))
 
 
 
