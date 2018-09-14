@@ -86,7 +86,7 @@ for row in rows:
 	txs_list.append(tx)
 
 DAYS_TO_PROJECT = args.forecast
-now = datetime.datetime(month=8,year=2018,day=9)
+now = datetime.datetime.now()
 tings2plot = []
 days = range(DAYS_TO_PROJECT)
 
