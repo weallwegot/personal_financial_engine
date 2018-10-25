@@ -1,6 +1,5 @@
 import datetime
 import argparse
-from dateutil import parser
 import os
 import pandas as pd
 import pint
@@ -223,9 +222,11 @@ layout = go.Layout(
 )
 
 fig = go.Figure(data=traces2plot, layout=layout)
-pltly.plot(fig)
 
+budget_name = args.money.replace('/','').replace('.csv','')
+pltly.plot(fig,filename='{}_money_{}.html'.format(str(now),budget_name))
 
+aggregate_df.to_csv('{}_money_{}.csv'.format(str(now),budget_name))
 
 
 

@@ -6,7 +6,9 @@ __pycache__/
 ## personal data files
 **money_io.csv
 **my_*.csv
-main.html
+*.html
+*.csv
+*.numbers
 # C extensions
 *.so
 **DS_Store
