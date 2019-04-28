@@ -87,6 +87,7 @@ for row in rows:
 
 DAYS_TO_PROJECT = args.forecast
 now = datetime.datetime.now()
+#now = datetime.datetime(month=3, day=25, year=2019)
 tings2plot = []
 days = range(DAYS_TO_PROJECT)
 
@@ -221,6 +222,19 @@ layout = go.Layout(
 fig = go.Figure(data=traces2plot, layout=layout)
 
 budget_name = args.money.replace('/', '').replace('.csv', '')
-pltly.plot(fig, filename='{}_money_{}.html'.format(str(now), budget_name))
 
-aggregate_df.to_csv('{}_money_{}.csv'.format(str(now), budget_name))
+HTML_FNAME = 'outputs/html/{yr}/{month}/{date}_money_{budget_name}.html'.format(
+    month=now.month, date=str(now), budget_name=budget_name, yr=now.year)
+
+HTML_DIR = str(os.path.dirname(HTML_FNAME))
+CSV_FNAME = 'outputs/csv/{yr}/{month}/{date}_money_{budget_name}.csv'.format(
+    month=now.month, date=str(now), budget_name=budget_name, yr=now.year)
+CSV_DIR = str(os.path.dirname(CSV_FNAME))
+
+if not os.path.exists(CSV_DIR):
+    os.makedirs(CSV_DIR)
+if not os.path.exists(HTML_DIR):
+    os.makedirs(HTML_DIR)
+
+pltly.plot(fig, filename=HTML_FNAME)
+aggregate_df.to_csv(CSV_FNAME)
