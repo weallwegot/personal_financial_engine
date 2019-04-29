@@ -2,11 +2,13 @@ from definitions import Q_, FOREVER_RECURRING
 from dateutil import parser
 import logging
 
+from datetime import datetime
+from typing import Union
 logger = logging.getLogger('finance_app')
 
 class Transaction(object):
 
-	def __init__(self,f,a,t,d,sd,sc,u):
+	def __init__(self,f: str,a: str,t: str,d: str,sd: str,sc: str,u: Union[str, float]) -> None:
 		# change to have the units recognized by pint and the + as a mathematical operation
 		self.frequency = f
 		self.amount = a
@@ -20,7 +22,7 @@ class Transaction(object):
 	def __repr__(self):
 		return self.description
 
-	def _parse_attributes(self):
+	def _parse_attributes(self) -> None:
 
 		self.amount = Q_(float(self.amount.replace('$','')),'usd')
 
@@ -40,7 +42,7 @@ class Transaction(object):
 
 
 
-	def should_payment_occur_today(self,datetime_object,check_cycles=1):
+	def should_payment_occur_today(self,datetime_object: datetime,check_cycles: int = 1) -> bool:
 		"""
 		Given a datetime object determine if this transaction
 		would have occurred on a given date

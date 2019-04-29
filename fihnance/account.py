@@ -1,11 +1,14 @@
 from definitions import Q_, CHECKING, CREDIT, VALID_ACCT_TYPES
 import logging
 
+from fihnance.transaction import Transaction
+from numpy import float64
+from typing import Union
 logger = logging.getLogger('finance_app')
 
 
 class Account(object):
-	def __init__(self,name,bal,acct_type,payback_date=None,payback_src=None,credit_limit=None):
+	def __init__(self,name: str,bal: str,acct_type: str,payback_date: Optional[float64] = None,payback_src: Optional[Union[str, float]] = None,credit_limit: Optional[Union[str, float]] = None) -> None:
 		self.name = name
 		self.balance = Q_(float(bal.replace('$','')),'usd')
 		self.acct_type = acct_type.upper()
@@ -15,10 +18,10 @@ class Account(object):
 		self.credit_limit = credit_limit
 		self._validate()
 
-	def __repr__(self):
+	def __repr__(self) -> str:
 		return "{}: {}".format(self.name, self.balance)
 
-	def _validate(self):
+	def _validate(self) -> None:
 		if self.acct_type not in VALID_ACCT_TYPES:
 			raise ValueError('What is this account type? {}\nMust be checking or credit'
 				.format(self.acct_type))
@@ -30,7 +33,7 @@ class Account(object):
 
 			self.credit_limit = Q_(float(self.credit_limit.replace('$','')),'usd')
 
-	def process_tx(self,amount_extractable_obj):
+	def process_tx(self,amount_extractable_obj: Union[Account, Transaction]) -> None:
 
 		"""
 		figure out which attribute the amount is stored in
@@ -64,7 +67,7 @@ class Account(object):
 			logger.debug("credit account {} was paid off".
 				format(amount_extractable_obj))
 
-	def payoff_credit_acct(self,account_object):
+	def payoff_credit_acct(self,account_object: Account) -> None:
 		"""
 		modify the account_object by paying off its balance
 		"""
