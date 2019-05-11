@@ -26,6 +26,18 @@ $(document).ready(function () {
     });
 
 
+    $("table.order-list").on("click", ".ibtnEdit", function (event) {
+        $(this).closest("tr").remove();       
+    });
+
+
+    $("table.order-list").on("click", ".ibtnSave", function (event) {
+        $(this).closest("tr").remove();       
+        counter -= 1
+    });
+
+
+
 });
 
 
