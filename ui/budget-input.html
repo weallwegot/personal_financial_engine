@@ -104,6 +104,11 @@ $(document).ready(function(){
     $(".add-new").click(function(){
 		$(this).attr("disabled", "disabled");
 		var index = $("table tbody tr:last-child").index();
+        var cols = ["name","department","phone"];
+        var row_html = "<tr>"
+        for(col in cols){
+            row_html+= '<td><input type="text" class="form-control" name="{col}" id="{col}"'
+        }
         var row = '<tr>' +
             '<td><input type="text" class="form-control" name="name" id="name"></td>' +
             '<td><input type="text" class="form-control" name="department" id="department"></td>' +

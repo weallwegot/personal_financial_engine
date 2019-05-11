@@ -1,0 +1,52 @@
+<script src="http://cdnjs.cloudflare.com/ajax/libs/list.js/1.5.0/list.min.js"></script>
+<script src="http://code.jquery.com/jquery-1.11.1.min.js"></script>
+<link href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.0/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
+<script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.0/js/bootstrap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.css"></script>
+
+<script src="index.js"></script>
+
+
+
+
+<!------ Include the above in your HEAD tag ---------->
+
+<div class="container">
+    <table id="myTable" class=" table order-list">
+    <input type="text" class="fuzzy-search" />
+    <thead>
+        <tr>
+            <td>Name</td>
+            <td>Gmail</td>
+            <td>Phone</td>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td class="col-sm-4 name">
+                <input type="text" name="name" class="form-control" />
+            </td>
+            <td class="col-sm-4 mail">
+                <input type="mail" name="mail"  class="form-control"/>
+            </td>
+            <td class="col-sm-3 phone">
+                <input type="text" name="phone"  class="form-control"/>
+            </td>
+            <td class="col-sm-2"><a class="deleteRow"></a>
+            <td class="col-sm-2"><a class="saveRow"></a>
+            <td class="col-sm-2"><a class="editRow"></a>
+
+            </td>
+        </tr>
+    </tbody>
+    <tfoot>
+        <tr>
+            <td colspan="5" style="text-align: left;">
+                <input type="button" class="btn btn-lg btn-block " id="addrow" value="Add Row" />
+            </td>
+        </tr>
+        <tr>
+        </tr>
+    </tfoot>
+</table>
+</div>
