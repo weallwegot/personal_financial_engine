@@ -1,6 +1,6 @@
 
 
-const colnames = ["name","department","phone"]
+const colnames = ["Description","Amount","Occurrence","Type","Sample_Date","Source","Until"]
 
 $(document).ready(function(){
 	$('[data-toggle="tooltip"]').tooltip();
