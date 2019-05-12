@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Bootstrap Table with Add and Delete Row Feature</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto|Varela+Round|Open+Sans">
+<link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+<link rel="stylesheet" href="css/budget-input.css">
+<script src="js/bank-info-input.js"></script>
+</head>
+<body>
+    <div class="container">
+        <div class="table-wrapper">
+            <div class="table-title">
+                <div class="row">
+                    <div class="col-sm-8"><h2>Bank Account Information</h2></div>
+                    <div class="col-sm-4">
+                        <button type="button" class="btn btn-info add-new"><i class="fa fa-plus"></i> Add New</button>
+                    </div>
+                </div>
+            </div>
+            <table class="table table-bordered"> 
+                <thead>
+
+                    <tr>
+                        <th>Account Name</th>
+                        <th>Balance</th>
+                        <th>Type</th>
+                        <th>Payoff Day</th>
+                        <th>Payoff Source</th>
+                        <th>Credit Limit</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- New Data Will Be Inserted Here -->
+                    <tr>
+                        <td>Wells Fargo Checking</td>
+                        <td>$780.00</td>
+                        <td>Checking</td>
+                        <td>N/A</td>
+                        <td>N/A</td>
+                        <td>N/A</td>
+                        <td>
+							<a class="add" title="Add" data-toggle="tooltip"><i class="material-icons">&#xE03B;</i></a>
+                            <a class="edit" title="Edit" data-toggle="tooltip"><i class="material-icons">&#xE254;</i></a>
+                            <a class="delete" title="Delete" data-toggle="tooltip"><i class="material-icons">&#xE872;</i></a>
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <td>Chase Sapphire Credit</td>
+                        <td>$900.00</td>
+                        <td>Credit</td>
+                        <td>1</td>
+                        <td>Wells Fargo Checking</td>
+                        <td>%9,000.00</td>
+                        <td>
+                            <a class="add" title="Add" data-toggle="tooltip"><i class="material-icons">&#xE03B;</i></a>
+                            <a class="edit" title="Edit" data-toggle="tooltip"><i class="material-icons">&#xE254;</i></a>
+                            <a class="delete" title="Delete" data-toggle="tooltip"><i class="material-icons">&#xE872;</i></a>
+                        </td>
+                    </tr>
+     
+                </tbody>
+            </table>
+        </div>
+    </div>     
+</body>
+</html>                            
