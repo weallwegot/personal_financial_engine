@@ -1,9 +1,9 @@
 from definitions import Q_, FOREVER_RECURRING
 from dateutil import parser
 import logging
-
 from datetime import datetime
-from typing import Union
+from typing import Union, Optional
+
 logger = logging.getLogger('finance_app')
 
 

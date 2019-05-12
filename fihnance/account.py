@@ -3,11 +3,18 @@ import logging
 
 from fihnance.transaction import Transaction
 from numpy import float64
-from typing import Union
+from typing import Union, Optional
 logger = logging.getLogger('finance_app')
 
 
-class Account(object):
+# just used for type checking, not sure if this destroys the point
+class AccountInterface():
+
+    def __init__(self):
+        pass
+
+
+class Account(AccountInterface):
 
     def __init__(self,
                  name: str,
@@ -41,7 +48,7 @@ class Account(object):
 
             self.credit_limit = Q_(float(self.credit_limit.replace('$', '')), 'usd')
 
-    def process_tx(self, amount_extractable_obj: Union[Account, Transaction]) -> None:
+    def process_tx(self, amount_extractable_obj: Union[AccountInterface, Transaction]) -> None:
         """
         figure out which attribute the amount is stored in
         if its a transaction object use the amount attribute
@@ -74,7 +81,7 @@ class Account(object):
             logger.debug("credit account {} was paid off".
                          format(amount_extractable_obj))
 
-    def payoff_credit_acct(self, account_object: Account) -> None:
+    def payoff_credit_acct(self, account_object: AccountInterface) -> None:
         """
         modify the account_object by paying off its balance
         """
