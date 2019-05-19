@@ -16,6 +16,9 @@
         <link rel="stylesheet" href="css/normalize.css">
         <link rel="stylesheet" href="css/index.css">
         <link rel="stylesheet" href="css/message.css"> -->
+        <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+        <link href="css/materialize.css" type="text/css" rel="stylesheet" media="screen,projection"/>
+        <link href="css/style.css" type="text/css" rel="stylesheet" media="screen,projection"/>
         <link rel="stylesheet" href="css/register.css">
     </head>
     <body>
@@ -35,7 +38,7 @@
             </div>
         </div>
 
-        <header>
+        <!-- <header>
           <img src="images/logo.png">
         </header>
 
@@ -48,7 +51,7 @@
 
               <input type="submit" value="Let's Ryde">
             </form>
-        </section>
+        </section> -->
 
 
         <div class="container">
@@ -66,30 +69,27 @@
                   </div>
                   <div class="row">
                     <div class="input-field col s12">
-                      <input id="email" type="email" class="validate" required>
+                      <input id="emailInputRegister" type="email" class="validate" pattern=".*" required>
                       <label for="email">Email</label>
                     </div>
                   </div>
                   <div class="row">
                     <div class="input-field col s12">
-                      <input id="password" type="password" class="validate" minlength="6" required>
-                      <label for="password">Password</label>
+                      <input id="passwordInputRegister" type="password" class="validate" minlength="6" pattern=".*" required>
+                      <label for="passwordInputRegister">Password</label>
                     </div>
                   </div>
-                  <!-- <div class="row">
-                    <div class="input-field col s6">
-                      <div class="gender-male">
-                        <input class="with-gap" name="gender" type="radio" id="male" required />
-                        <label for="male">Male</label>
-                      </div>
-                      <div class="gender-female">
-                        <input class="with-gap" name="gender" type="radio" id="female" required />
-                        <label for="female">Female</label>
-                      </div>
-                    </div> -->
+
+                  <div class="row">
+                    <div class="input-field col s12">
+                      <input id="password2InputRegister" type="password" class="validate" minlength="6" pattern=".*" required>
+                      <label for="password2InputRegister">Confirm Password</label>
+                    </div>
+                  </div>
+
             
                     <div class="input-field col s6">
-                      <button class="btn btn-large btn-register waves-effect waves-light" type="submit" name="action">Register
+                      <button id="registerNewUser" class="btn btn-large btn-register waves-effect waves-light" type="submit" name="action">Register
                         <i class="material-icons right">done</i>
                       </button>
                     </div>
@@ -109,8 +109,8 @@
         <script src="js/materialize.js"></script>
         <script src="js/init.js"></script>
           
-        <script src="js/vendor/jquery-3.1.0.js"></script>
-        <script src="js/vendor/bootstrap.min.js"></script>
+        <!-- <script src="js/vendor/jquery-3.1.0.js"></script>
+        <script src="js/vendor/bootstrap.min.js"></script> -->
         <script src="js/vendor/aws-cognito-sdk.min.js"></script>
         <script src="js/vendor/amazon-cognito-identity.min.js"></script>
         <script src="js/config.js"></script>
