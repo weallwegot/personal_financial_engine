@@ -12,10 +12,11 @@
 
         <!-- Place favicon.ico and apple-touch-icon.png in the root directory -->
 
-        <link rel="stylesheet" href="css/font.css">
+        <!-- <link rel="stylesheet" href="css/font.css">
         <link rel="stylesheet" href="css/normalize.css">
         <link rel="stylesheet" href="css/index.css">
-        <link rel="stylesheet" href="css/message.css">
+        <link rel="stylesheet" href="css/message.css"> -->
+        <link rel="stylesheet" href="css/register.css">
     </head>
     <body>
         <!--[if lt IE 7]>
@@ -49,6 +50,65 @@
             </form>
         </section>
 
+
+        <div class="container">
+            <div class="row">
+                <form class="col s12" id="reg-form">
+                  <div class="row">
+                    <div class="input-field col s6">
+                      <input id="first_name" type="text" class="validate" required>
+                      <label for="first_name">First Name</label>
+                    </div>
+                    <div class="input-field col s6">
+                      <input id="last_name" type="text" class="validate" required>
+                      <label for="last_name">Last Name</label>
+                    </div>
+                  </div>
+                  <div class="row">
+                    <div class="input-field col s12">
+                      <input id="email" type="email" class="validate" required>
+                      <label for="email">Email</label>
+                    </div>
+                  </div>
+                  <div class="row">
+                    <div class="input-field col s12">
+                      <input id="password" type="password" class="validate" minlength="6" required>
+                      <label for="password">Password</label>
+                    </div>
+                  </div>
+                  <!-- <div class="row">
+                    <div class="input-field col s6">
+                      <div class="gender-male">
+                        <input class="with-gap" name="gender" type="radio" id="male" required />
+                        <label for="male">Male</label>
+                      </div>
+                      <div class="gender-female">
+                        <input class="with-gap" name="gender" type="radio" id="female" required />
+                        <label for="female">Female</label>
+                      </div>
+                    </div> -->
+            
+                    <div class="input-field col s6">
+                      <button class="btn btn-large btn-register waves-effect waves-light" type="submit" name="action">Register
+                        <i class="material-icons right">done</i>
+                      </button>
+                    </div>
+                  </div>
+                </form>
+              </div>
+              <a title="Login" class="ngl btn-floating btn-large waves-effect waves-light red"><i class="material-icons">input</i></a>
+            </div>
+            
+
+
+
+
+
+
+        <script src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
+        <script src="js/materialize.js"></script>
+        <script src="js/init.js"></script>
+          
         <script src="js/vendor/jquery-3.1.0.js"></script>
         <script src="js/vendor/bootstrap.min.js"></script>
         <script src="js/vendor/aws-cognito-sdk.min.js"></script>
