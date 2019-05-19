@@ -3,6 +3,7 @@
 var WildRydes = window.WildRydes || {};
 
 (function scopeWrapper($) {
+
     var signinUrl = 'signin.html';
 
     var poolData = {
@@ -18,6 +19,7 @@ var WildRydes = window.WildRydes || {};
 
         $('#registrationDiv').hide();
         $('#noCognitoMessage').show();
+        console.error('no cognito')
         
         return;
     }
@@ -108,10 +110,9 @@ var WildRydes = window.WildRydes || {};
      */
 
     $(function onDocReady() {
-        $('#signinForm').submit(handleSignin);
-        // $('#registrationForm').submit(handleRegister);
+        $('#signInUserBtn').click(handleSignin);
         $('#verifyForm').submit(handleVerify);
-        $('#registerNewUser').click(handleRegister);
+        $('#registerNewUserBtn').click(handleRegister);
     });
 
     function handleSignin(event) {
