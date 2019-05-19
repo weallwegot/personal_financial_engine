@@ -15,7 +15,10 @@ var WildRydes = window.WildRydes || {};
     if (!(_config.cognito.userPoolId &&
           _config.cognito.userPoolClientId &&
           _config.cognito.region)) {
+
+        $('#registrationDiv').hide();
         $('#noCognitoMessage').show();
+        
         return;
     }
 
@@ -106,8 +109,9 @@ var WildRydes = window.WildRydes || {};
 
     $(function onDocReady() {
         $('#signinForm').submit(handleSignin);
-        $('#registrationForm').submit(handleRegister);
+        // $('#registrationForm').submit(handleRegister);
         $('#verifyForm').submit(handleVerify);
+        $('#registerNewUser').click(handleRegister);
     });
 
     function handleSignin(event) {

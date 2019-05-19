@@ -26,7 +26,7 @@
             <p class="chromeframe">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> or <a href="http://www.google.com/chromeframe/?redirect=true">activate Google Chrome Frame</a> to improve your experience.</p>
         <![endif]-->
 
-        <div id="noCognitoMessage" class="configMessage" style="display: none;">
+        <!-- <div id="noCognitoMessage" class="configMessage" style="display: none;">
             <div class="backdrop"></div>
             <div class="panel panel-default">
                 <div class="panel-heading">
@@ -36,7 +36,23 @@
                     <p>There is no user pool configured in <a href="/js/config.js">/js/config.js</a>. You'll configure this in Module 2 of the workshop.</p>
                 </div>
             </div>
-        </div>
+        </div> -->
+
+        <div id="noCognitoMessage" class="card configMessage" style="display:none;height:50%;width:50%;margin:auto;">
+            <div class="card-image waves-effect waves-block waves-light">
+              <!-- where is the image <img class="activator" src="images/office.jpg"> -->
+            </div>
+            <div class="card-content">
+              <span class="card-title activator grey-text text-darken-4">Issue Discovered<i class="material-icons right">more_vert</i></span>
+            </div>
+            <div class="card-reveal">
+              <span class="card-title grey-text text-darken-4">No Cognito User Pool Configured<i class="material-icons right">close</i></span>
+              <p>There is no user pool configured in <a href="/js/config.js">/js/config.js</a>. You'll configure this in Module 2 of the workshop.</p>
+            </div>
+          </div>
+                 
+
+
 
         <!-- <header>
           <img src="images/logo.png">
@@ -54,7 +70,7 @@
         </section> -->
 
 
-        <div class="container">
+        <div id="registrationDiv" class="container" style="display:show">
             <div class="row">
                 <form class="col s12" id="reg-form">
                   <div class="row">
@@ -96,7 +112,7 @@
                   </div>
                 </form>
               </div>
-              <a title="Login" class="ngl btn-floating btn-large waves-effect waves-light red"><i class="material-icons">input</i></a>
+              <!-- <a title="Login" class="ngl btn-floating btn-large waves-effect waves-light red"><i class="material-icons">input</i></a> -->
             </div>
             
 
