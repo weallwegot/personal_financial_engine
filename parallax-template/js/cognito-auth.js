@@ -6,7 +6,7 @@ var WildRydes = window.WildRydes || {};
 
     var signInPage = 'signin.html';
     var verificationPage = 'verify.html';
-    var afterSignInPage = '';
+    var afterSignInPage = 'money-ts.html';
 
     var poolData = {
         UserPoolId: _config.cognito.userPoolId,
@@ -124,7 +124,7 @@ var WildRydes = window.WildRydes || {};
         signin(email, password,
             function signinSuccess() {
                 console.log('Successfully Logged In');
-                window.location.href = 'ride.html';
+                window.location.href = afterSignInPage;
             },
             function signinError(err) {
                 alert(err);
