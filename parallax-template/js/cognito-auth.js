@@ -4,7 +4,9 @@ var WildRydes = window.WildRydes || {};
 
 (function scopeWrapper($) {
 
-    var signinUrl = 'signin.html';
+    var signInPage = 'signin.html';
+    var verificationPage = 'verify.html';
+    var afterSignInPage = '';
 
     var poolData = {
         UserPoolId: _config.cognito.userPoolId,
@@ -111,7 +113,7 @@ var WildRydes = window.WildRydes || {};
 
     $(function onDocReady() {
         $('#signInUserBtn').click(handleSignin);
-        $('#verifyForm').submit(handleVerify);
+        $('#verifyEmailBtn').click(handleVerify);
         $('#registerNewUserBtn').click(handleRegister);
     });
 
@@ -140,7 +142,7 @@ var WildRydes = window.WildRydes || {};
             console.log('user name is ' + cognitoUser.getUsername());
             var confirmation = ('Registration successful. Please check your email inbox or spam folder for your verification code.');
             if (confirmation) {
-                window.location.href = 'verify.html';
+                window.location.href = verificationPage;
             }
         };
         var onFailure = function registerFailure(err) {
@@ -164,7 +166,7 @@ var WildRydes = window.WildRydes || {};
                 console.log('call result: ' + result);
                 console.log('Successfully verified');
                 alert('Verification successful. You will now be redirected to the login page.');
-                window.location.href = signinUrl;
+                window.location.href = signInPage;
             },
             function verifyError(err) {
                 alert(err);
