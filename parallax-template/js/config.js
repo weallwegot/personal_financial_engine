@@ -5,6 +5,10 @@ window._config = {
         region: 'us-east-2' // e.g. us-east-2
     },
     api: {
-        invokeUrl: 'https://5nhlf36qkj.execute-api.us-east-2.amazonaws.com/prod' // e.g. https://rc7nyt4tql.execute-api.us-west-2.amazonaws.com/prod',
+        invokeUrl: 'https://5nhlf36qkj.execute-api.us-east-2.amazonaws.com/prod', // e.g. https://rc7nyt4tql.execute-api.us-west-2.amazonaws.com/prod',
+        projectedTotalsUrl: '',
+        inputRetrievalUrl: '',
+        computeProjectionsUrl: ''
+
     }
 };
