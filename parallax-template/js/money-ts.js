@@ -1,58 +1,67 @@
 /*global WildRydes _config AmazonCognitoIdentity AWSCognito*/
-
 var WildRydes = window.WildRydes || {};
 
-(function scopeWrapper($) {
+(function rideScopeWrapper($) {
 
-    var signInPage = 'signin.html';
-    var verificationPage = 'verify.html';
-    var afterSignInPage = 'money-ts.html';
 
-    var poolData = {
-        UserPoolId: _config.cognito.userPoolId,
-        ClientId: _config.cognito.userPoolClientId
-    };
 
-    var userPool;
-
-    if (!(_config.cognito.userPoolId &&
-          _config.cognito.userPoolClientId &&
-          _config.cognito.region)) {
-
-        $('#registrationDiv').hide();
-        $('#noCognitoMessage').show();
-        console.error('no cognito')
-        
-        return;
-    }
-
-    userPool = new AmazonCognitoIdentity.CognitoUserPool(poolData);
-
-    if (typeof AWSCognito !== 'undefined') {
-        AWSCognito.config.region = _config.cognito.region;
-    }
-
-    WildRydes.signOut = function signOut() {
-        userPool.getCurrentUser().signOut();
-    };
-
-    WildRydes.authToken = new Promise(function fetchCurrentAuthToken(resolve, reject) {
-        var cognitoUser = userPool.getCurrentUser();
-
-        if (cognitoUser) {
-            cognitoUser.getSession(function sessionCallback(err, session) {
-                if (err) {
-                    reject(err);
-                } else if (!session.isValid()) {
-                    resolve(null);
-                } else {
-                    resolve(session.getIdToken().getJwtToken());
-                }
-            });
+    var authToken;
+    WildRydes.authToken.then(function setAuthToken(token) {
+        if (token) {
+            authToken = token;
         } else {
-            resolve(null);
+            window.location.href = '/signin.html';
+        }
+    }).catch(function handleTokenError(error) {
+        // take user back to signin if token is not handled
+        alert(error);
+        window.location.href = '/signin.html';
+    });
+
+    function requestMoneyTimeseries() {
+        $.ajax({
+            method: 'GET',
+            url: _config.api.projectedMoneyTimeseriesUrl + '/moneytimeseries',
+            headers: {
+                Authorization: authToken
+            },
+            contentType: 'application/json',
+            success: completeRequest,
+            error: function ajaxError(jqXHR, textStatus, errorThrown) {
+                console.error('Error requesting ride: ', textStatus, ', Details: ', errorThrown);
+                console.error('Response: ', jqXHR.responseText);
+                alert('An error occured when requesting your unicorn:\n' + jqXHR.responseText);
+            }
+        });
+    }
+
+    // complete the request by taking the timeseries data returned and using it to populate the timeseries plot
+    function completeRequest(result) {
+        console.log(request)
+    }
+
+    // Register click handler for #signout button
+    $(function onDocReady() {
+        requestMoneyTimeseries()
+        $('#signOut').click(function() {
+            WildRydes.signOut();
+            alert("You have been signed out.");
+            window.location = "signin.html";
+        });
+
+        WildRydes.authToken.then(function updateAuthMessage(token) {
+            if (token) {
+                displayUpdate('You are authenticated. Click to see your <a href="#authTokenModal" data-toggle="modal">auth token</a>.');
+                $('.authToken').text(token);
+            }
+        });
+
+        if (!_config.api.invokeUrl) {
+            $('#noApiMessage').show();
         }
     });
 
-
+    function displayUpdate(text) {
+        $('#updates').append($('<li>' + text + '</li>'));
+    }
 }(jQuery));
