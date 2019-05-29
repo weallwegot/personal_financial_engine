@@ -1,10 +1,8 @@
 /*global WildRydes _config AmazonCognitoIdentity AWSCognito*/
 var WildRydes = window.WildRydes || {};
 
+
 (function rideScopeWrapper($) {
-
-
-
     var authToken;
     WildRydes.authToken.then(function setAuthToken(token) {
         if (token) {
@@ -20,34 +18,41 @@ var WildRydes = window.WildRydes || {};
 
     function requestMoneyTimeseries() {
         $.ajax({
-            method: 'GET',
-            url: _config.api.projectedMoneyTimeseriesUrl + '/moneytimeseries',
+            method: 'POST',
+            url: _config.api.invokeUrl + '/moneytimeseries',
             headers: {
                 Authorization: authToken
             },
+            data: JSON.stringify({
+                Onward: {
+                    TestPacket1: 12.04,
+                    TestPacket2: 1906
+                }
+            }),
             contentType: 'application/json',
             success: completeRequest,
             error: function ajaxError(jqXHR, textStatus, errorThrown) {
                 console.error('Error requesting ride: ', textStatus, ', Details: ', errorThrown);
                 console.error('Response: ', jqXHR.responseText);
-                alert('An error occured when requesting your unicorn:\n' + jqXHR.responseText);
+                alert('An error occured when requesting your money trend:\n' + jqXHR.responseText);
             }
         });
     }
 
     // complete the request by taking the timeseries data returned and using it to populate the timeseries plot
     function completeRequest(result) {
-        console.log(request)
+        console.log('Response received from API: ',result)
     }
 
     // Register click handler for #signout button
     $(function onDocReady() {
-        requestMoneyTimeseries()
+
         $('#signOut').click(function() {
             WildRydes.signOut();
             alert("You have been signed out.");
             window.location = "signin.html";
         });
+        requestMoneyTimeseries();
 
         WildRydes.authToken.then(function updateAuthMessage(token) {
             if (token) {
