@@ -3,6 +3,9 @@ __pycache__/
 *.py[cod]
 *$py.class
 
+#sample aws template
+aws-wildrydes-web*
+
 ## personal data files
 **money_io.csv
 **my_*.csv
