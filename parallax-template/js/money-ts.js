@@ -43,19 +43,37 @@ var WildRydes = window.WildRydes || {};
     function completeRequest(result) {
         console.log('Response received from API: ',result)
 
-        var trace1 = {
-          x: [1, 2, 3, 4],
-          y: [10, 15, 13, 17],
+        var dates = result.map(x=>x.date);
+        var totals = result.map(x=>x.daily_total);
+
+        var accounts = Object.keys(result[0]).filter(i=>(!i.endsWith("transactions") && i!="date" && i!="daily_total"))
+        var account_balances = {};
+        var idx;
+        // for(idx in accounts){
+        //     var acc = accounts[idx]
+        //     if account_balances.hasOwnProperty(acc){
+        //         account_balances[acc].push()
+        //     } else {
+        //         account_balances[acc] = []
+        //     }
+        // }
+
+
+
+
+        var totals_trace = {
+          x: dates,
+          y: totals,
           type: 'scatter'
         };
 
-        var trace2 = {
-          x: [1, 2, 3, 4],
-          y: [16, 5, 11, 9],
-          type: 'scatter'
-        };
+        // var trace2 = {
+        //   x: dates,
+        //   y: ,
+        //   type: 'scatter'
+        // };
 
-        var data = [trace1, trace2];
+        var data = [totals_trace];
 
         Plotly.newPlot("money-ts-line-plot", data);
     }
