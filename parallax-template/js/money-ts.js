@@ -43,21 +43,39 @@ var WildRydes = window.WildRydes || {};
     function completeRequest(result) {
         console.log('Response received from API: ',result)
 
-        var trace1 = {
-          x: [1, 2, 3, 4],
-          y: [10, 15, 13, 17],
+        var dates = result.map(x=>x.date);
+        var totals = result.map(x=>x.daily_total);
+
+        var accounts = Object.keys(result[0]).filter(i=>(!i.endsWith("transactions") && i!="date" && i!="daily_total"))
+        var account_balances = {};
+        var idx;
+        // calculate totals for each account name
+        for(idx in accounts){
+            var accName = accounts[idx]
+            var accDailyBalances = result.map(x=>x[accName])
+            var accDailyTxs = result.map(x=>x[accName+"transactions"])
+            account_balances[accName] = {
+                x: dates,
+                y: accDailyBalances,
+                name: accName,
+                text: accDailyTxs,
+                type: 'scatter'}
+
+        }
+
+
+
+
+        var totals_trace = {
+          x: dates,
+          y: totals,
+          name: "Totals",
           type: 'scatter'
         };
 
-        var trace2 = {
-          x: [1, 2, 3, 4],
-          y: [16, 5, 11, 9],
-          type: 'scatter'
-        };
+        var data = [totals_trace]
 
-        var data = [trace1, trace2];
-
-        Plotly.newPlot("money-ts-line-plot", data);
+        Plotly.newPlot("money-ts-line-plot", data.concat(Object.values(account_balances)));
     }
 
     // Register click handler for #signout button

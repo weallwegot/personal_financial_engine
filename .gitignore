@@ -110,3 +110,6 @@ ENV/
 
 # mypy
 .mypy_cache/
+
+# sensitive event json info
+**event.json**
