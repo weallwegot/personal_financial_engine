@@ -49,14 +49,19 @@ var WildRydes = window.WildRydes || {};
         var accounts = Object.keys(result[0]).filter(i=>(!i.endsWith("transactions") && i!="date" && i!="daily_total"))
         var account_balances = {};
         var idx;
-        // for(idx in accounts){
-        //     var acc = accounts[idx]
-        //     if account_balances.hasOwnProperty(acc){
-        //         account_balances[acc].push()
-        //     } else {
-        //         account_balances[acc] = []
-        //     }
-        // }
+        // calculate totals for each account name
+        for(idx in accounts){
+            var accName = accounts[idx]
+            var accDailyBalances = result.map(x=>x[accName])
+            var accDailyTxs = result.map(x=>x[accName+"transactions"])
+            account_balances[accName] = {
+                x: dates,
+                y: accDailyBalances,
+                name: accName,
+                text: accDailyTxs,
+                type: 'scatter'}
+
+        }
 
 
 
@@ -64,18 +69,13 @@ var WildRydes = window.WildRydes || {};
         var totals_trace = {
           x: dates,
           y: totals,
+          name: "Totals",
           type: 'scatter'
         };
 
-        // var trace2 = {
-        //   x: dates,
-        //   y: ,
-        //   type: 'scatter'
-        // };
+        var data = [totals_trace]
 
-        var data = [totals_trace];
-
-        Plotly.newPlot("money-ts-line-plot", data);
+        Plotly.newPlot("money-ts-line-plot", data.concat(Object.values(account_balances)));
     }
 
     // Register click handler for #signout button
