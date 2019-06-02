@@ -1,9 +1,11 @@
-
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
 import boto3
 import csv
-import s3fs
 import json
 import logging
+from budget_retrieval import get_budget
+from budget_placement import place_budget
 
 
 my_s3fs = s3fs.S3FileSystem()
@@ -31,26 +33,19 @@ def lambda_handler(event, context):
 
     '''
 
-    operation = event['httpMethod']
+    path = event['path']
     user_uid = event['requestContext']['authorizer']['claims']['sub']
 
-    full_path = f"{toplevel_dir}/user_data/{user_uid}/{forecasted_data_filename}"
-    with my_s3fs.open(full_path, 'r', errors='ignore') as fh:
-        #my_file_lines = fh.readlines()
-        reader = csv.DictReader(fh)
-        rows = []
+    if path.endswith('/retrieve'):
+        response = get_budget(user_uid)
+        import pdb
+        pdb.set_trace()
+    elif path.endswith('/place'):
+        response = place_budget(event)
 
-        for row in reader:
-            day_total = sum([float(v) for k, v in row.items()
-                             if k not in COLUMS_WITHOUT_ACCOUNT_TOTALS and not k.endswith('transactions')])
-            row['daily_total'] = day_total
-            row.pop("")
-
-            rows.append(row)
-
-    return respond(err=None, res=rows)
+    return respond(err=None, res=response)
 
 
-# with open('event.json') as f:
-#     e = json.load(f)
-# lambda_handler(e, {})
+with open('event.json') as f:
+    e = json.load(f)
+lambda_handler(e, {})
