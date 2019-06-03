@@ -58,6 +58,30 @@ var WildRydes = window.WildRydes || {};
     // complete the request by taking the timeseries data returned and using it to populate the timeseries plot
     function completeRequest(result) {
         console.log("Response received from API: ", result);
+        for (idx in result) {
+            var row = result[idx];
+            addNewRow(row);
+        }
+    }
+
+    function addNewRow(row) {
+        var actions = $("table td:last-child").html();
+        var index = $("table tbody tr:last-child").index();
+        var rowHTML = "<tr>";
+        for (idx in colnames) {
+            var colname = colnames[idx];
+            rowHTML += `<td>${row[colname]}"</td>`;
+        }
+
+        rowHTML += `<td>${actions}</td>`;
+        rowHTML += "</tr>";
+
+        $("table").append(rowHTML);
+        $("table tbody tr")
+            .eq(index + 1)
+            .find(".add, .edit")
+            .toggle();
+        // $('[data-toggle="tooltip"]').tooltip();
     }
 
     $(document).ready(function() {
@@ -69,7 +93,6 @@ var WildRydes = window.WildRydes || {};
         $(".add-new").click(function() {
             $(this).attr("disabled", "disabled");
             var index = $("table tbody tr:last-child").index();
-            var cols = ["name", "department", "phone"];
             var row_html = "<tr>";
             for (idx in colnames) {
                 row_html += `<td><input type="text" class="form-control" name="${
