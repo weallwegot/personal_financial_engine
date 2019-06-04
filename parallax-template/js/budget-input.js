@@ -115,18 +115,19 @@ var WildRydes = window.WildRydes || {};
 
            //loops through each cell in current row
            // this should line up with colnames
-           var dataObj = {}
+           var dataObj = {};
            for(var j = 0; j < cellLength; j++){
 
                   // get your cell info here
 
                   var cellVal = oCells.item(j).innerHTML;
-                  dataObj[colnames[j]]. = cellVal
-                  alert(cellVal);
+                  dataObj[colnames[j]]. = cellVal;
+
                }
+            dictArray.push(dataObj);
         }
 
-        return cellVal
+        return dictArray
 
     }
 
