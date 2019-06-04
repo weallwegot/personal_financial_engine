@@ -64,6 +64,78 @@ var WildRydes = window.WildRydes || {};
         }
     }
 
+
+    function placeBudgetInfo() {
+        $.ajax({
+            method: "POST",
+            url: _config.api.invokeUrl + "/budget-handling",
+            headers: {
+                Authorization: authToken
+            },
+            data: JSON.stringify({
+                RetrieveOrPlace: "place"
+                BudgetData: retrieveTableData()
+            }),
+            contentType: "application/json",
+            success: completePostDataRequest,
+            error: function ajaxError(jqXHR, textStatus, errorThrown) {
+                console.error(
+                    "Error requesting ride: ",
+                    textStatus,
+                    ", Details: ",
+                    errorThrown
+                );
+                console.error("Response: ", jqXHR.responseText);
+                alert(
+                    "An error occured when requesting your money trend:\n" +
+                        jqXHR.responseText
+                );
+            }
+        });
+    }
+
+    function retrieveTableData(){
+
+        //gets table
+        var oTable = document.getElementsByClassName('table-bordered')[0];
+
+        //gets rows of table
+        var rowLength = oTable.rows.length;
+
+        var dictArray = [];
+
+        //loops through rows
+        for (i = 0; i < rowLength; i++){
+
+          //gets cells of current row
+           var oCells = oTable.rows.item(i).cells;
+
+           //gets amount of cells of current row
+           var cellLength = oCells.length;
+
+           //loops through each cell in current row
+           // this should line up with colnames
+           var dataObj = {}
+           for(var j = 0; j < cellLength; j++){
+
+                  // get your cell info here
+
+                  var cellVal = oCells.item(j).innerHTML;
+                  dataObj[colnames[j]]. = cellVal
+                  alert(cellVal);
+               }
+        }
+
+        return cellVal
+
+    }
+
+    // complete the request by taking the timeseries data returned and using it to populate the timeseries plot
+    function completePostDataRequest(result) {
+        console.log("Response received from API: ", result);
+
+    }
+
     function addNewRow(row) {
         var actions = $("table td:last-child").html();
         var index = $("table tbody tr:last-child").index();
@@ -79,9 +151,9 @@ var WildRydes = window.WildRydes || {};
         $("table").append(rowHTML);
         $("table tbody tr")
             .eq(index + 1)
-            .find(".add, .edit")
-            .toggle();
-        // $('[data-toggle="tooltip"]').tooltip();
+            .find(".add, .edit");
+        .toggle();
+        $('[data-toggle="tooltip"]').tooltip();
     }
 
     $(document).ready(function() {
