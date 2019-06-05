@@ -8,12 +8,6 @@ from budget_retrieval import get_budget
 from budget_placement import place_budget
 
 
-my_s3fs = s3fs.S3FileSystem()
-toplevel_dir = "s3://financial-engine-data"
-forecasted_data_filename = "forecasted-daily-txs.csv"
-COLUMS_WITHOUT_ACCOUNT_TOTALS = ["date", "transactions"]
-
-
 def respond(err, res=None):
     return {
         'statusCode': '400' if err else '200',
@@ -35,17 +29,18 @@ def lambda_handler(event, context):
 
     path = event['path']
     user_uid = event['requestContext']['authorizer']['claims']['sub']
+    body = json.loads(event['body'])
+    path = '/retrieve' if body['RetrieveOrPlace'].endswith('retrieve') else '/place'
+    print(path)
 
     if path.endswith('/retrieve'):
         response = get_budget(user_uid)
-        import pdb
-        pdb.set_trace()
     elif path.endswith('/place'):
-        response = place_budget(event)
+        response = place_budget(user_uid, body)
 
     return respond(err=None, res=response)
 
 
-with open('event.json') as f:
-    e = json.load(f)
-lambda_handler(e, {})
+# with open('event.json') as f:
+#     e = json.load(f)
+# lambda_handler(e, {})
