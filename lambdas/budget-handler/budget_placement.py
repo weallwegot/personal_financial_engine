@@ -12,7 +12,7 @@ toplevel_dir = "s3://financial-engine-data"
 budget_data_filename = "planned-budget.csv"
 
 BUDGET_FIELDNAMES = ["Description", "Amount", "Occurrence", "Type", "Sample_Date", "Source", "Until"]
-ACCOUNT_FIELDNAMES = ["Account_Name", "Balance", "Type", "Payoff_Day", "Credit_Limit"]
+ACCOUNT_FIELDNAMES = ["AccountName", "Balance", "Type", "PayoffDay", "PayoffSource", "CreditLimit"]
 
 s3client = boto3.client('s3')
 
