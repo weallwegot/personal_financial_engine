@@ -31,12 +31,14 @@ def lambda_handler(event, context):
     user_uid = event['requestContext']['authorizer']['claims']['sub']
     body = json.loads(event['body'])
     path = '/retrieve' if body['RetrieveOrPlace'].endswith('retrieve') else '/place'
+
+    entity = 'budget' if body['Entity'] else 'account'
     print(path)
 
     if path.endswith('/retrieve'):
-        response = get_budget(user_uid)
+        response = get_budget(user_uid, entity)
     elif path.endswith('/place'):
-        response = place_budget(user_uid, body)
+        response = place_budget(user_uid, body, entity)
 
     return respond(err=None, res=response)
 
