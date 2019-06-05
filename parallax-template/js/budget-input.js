@@ -73,7 +73,7 @@ var WildRydes = window.WildRydes || {};
                 Authorization: authToken
             },
             data: JSON.stringify({
-                RetrieveOrPlace: "place"
+                RetrieveOrPlace: "place",
                 BudgetData: retrieveTableData()
             }),
             contentType: "application/json",
@@ -94,7 +94,7 @@ var WildRydes = window.WildRydes || {};
         });
     }
 
-    function retrieveTableData(){
+    function retrieveTableData(event){
 
         //gets table
         var oTable = document.getElementsByClassName('table-bordered')[0];
@@ -121,7 +121,7 @@ var WildRydes = window.WildRydes || {};
                   // get your cell info here
 
                   var cellVal = oCells.item(j).innerHTML;
-                  dataObj[colnames[j]]. = cellVal;
+                  dataObj[colnames[j]] = cellVal;
 
                }
             dictArray.push(dataObj);
@@ -153,7 +153,6 @@ var WildRydes = window.WildRydes || {};
         $("table tbody tr")
             .eq(index + 1)
             .find(".add, .edit");
-        .toggle();
         $('[data-toggle="tooltip"]').tooltip();
     }
 
@@ -161,7 +160,7 @@ var WildRydes = window.WildRydes || {};
         $('[data-toggle="tooltip"]').tooltip();
         var actions = $("table td:last-child").html();
         requestBudgetInfo();
-
+        $('#place-budget-data').click(placeBudgetInfo);
         // Append table with add row form on add new button click
         $(".add-new").click(function() {
             $(this).attr("disabled", "disabled");
@@ -183,6 +182,8 @@ var WildRydes = window.WildRydes || {};
                 .toggle();
             $('[data-toggle="tooltip"]').tooltip();
         });
+
+
 
         // Add row on add button click
         $(document).on("click", ".add", function() {
