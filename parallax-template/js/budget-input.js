@@ -100,23 +100,20 @@ var WildRydes = window.WildRydes || {};
         var oTable = document.getElementsByClassName('table-bordered')[0];
 
         //gets rows of table
-        var rowLength = oTable.rows.length;
+        var numRows = oTable.rows.length;
 
         var dictArray = [];
 
-        //loops through rows
-        for (i = 0; i < rowLength; i++){
+        //loops through rows (minus last one with the button in it)
+        for (i = 0; i < numRows - 2 ; i++){
 
           //gets cells of current row
            var oCells = oTable.rows.item(i).cells;
 
-           //gets amount of cells of current row
-           var cellLength = oCells.length;
-
            //loops through each cell in current row
            // this should line up with colnames
            var dataObj = {};
-           for(var j = 0; j < cellLength; j++){
+           for(var j = 0; j < colnames.length; j++){
 
                   // get your cell info here
 
