@@ -104,8 +104,8 @@ var WildRydes = window.WildRydes || {};
 
         var dictArray = [];
 
-        //loops through rows (minus last one with the button in it)
-        for (i = 0; i < numRows - 2 ; i++){
+        //loops through rows (minus last ones with the button in it & start at 1 to not include the headers)
+        for (i = 1; i < numRows - 2 ; i++){
 
           //gets cells of current row
            var oCells = oTable.rows.item(i).cells;
