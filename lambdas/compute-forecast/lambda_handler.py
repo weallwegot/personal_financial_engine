@@ -1,23 +1,32 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 import boto3
+import s3fs
 import csv
+import io
+import datetime
 import json
 import logging
 from collections import OrderedDict
 from typing import List, Tuple
 
+from definitions import ROOT_DIR, Q_, CHECKING, CREDIT, FOREVER_RECURRING
+
+from fihnance.account import Account
+from fihnance.transaction import Transaction
+
+logger = logging.getLogger()
+
 my_s3fs = s3fs.S3FileSystem()
 toplevel_dir = "s3://financial-engine-data"
 BUDGET_DATA_FILENAME = "planned-budget.csv"
 ACCOUNT_DATA_FILENAME = 'account-balance.csv'
-TX_DATA_FILENAME = '.csv'
+TX_DATA_FILENAME = 'forecasted-daily-txs.csv'
 DAYS_TO_PROJECT = 250
-FIELDNAMES = []
+FIELDNAMES_REQUIRED = ['date', 'transactions']
 
 
 def get_data(userid: str) -> Tuple[List[OrderedDict], List[OrderedDict]]:
-    data_config = DATA_MAP[entity]
     acc_path = f"{toplevel_dir}/user_data/{userid}/{ACCOUNT_DATA_FILENAME}"
 
     budget_path = f"{toplevel_dir}/user_data/{userid}/{BUDGET_DATA_FILENAME}"
@@ -32,12 +41,19 @@ def get_data(userid: str) -> Tuple[List[OrderedDict], List[OrderedDict]]:
     return account_rows, budget_rows
 
 
-def place_forecasted_data(userid: str, tx_data: dict) -> None:
+def place_forecasted_data(userid: str, tx_data: List[OrderedDict]) -> None:
     """
     place the data calculated in the main handler into s3
     """
+    s3client = boto3.client('s3')
+
     output = io.StringIO()
-    # with my_s3fs.open(full_path, 'w') as fh:
+
+    FIELDNAMES = list(tx_data[0].keys())
+    if not set(FIELDNAMES_REQUIRED).intersection(set(FIELDNAMES)):
+        logger.warning(f'Columns required not seen: {FIELDNAMES_REQUIRED}')
+        return
+
     writer = csv.DictWriter(output, fieldnames=FIELDNAMES)
     writer.writeheader()
     for entry in tx_data:
@@ -49,6 +65,22 @@ def place_forecasted_data(userid: str, tx_data: dict) -> None:
     s3client.put_object(Bucket="financial-engine-data",
                         Key=f"user_data/{userid}/TEST{TX_DATA_FILENAME}",
                         Body=output.getvalue())
+
+
+def get_column_data(aggregate_data: List[dict], colname: str) -> List:
+    return [x[colname] for x in aggregate_data]
+
+
+def place_column_data(aggregate_data: List[dict], colname: str, newdata: List) -> List[dict]:
+    assert len(newdata) == len(aggregate_data), f"Lengths of newdata and aggregate data must match. Received {len(newdata)} new data to add to {len(aggregate_data)} aggregates"
+
+    updated_data = []
+    for idx in range(len(newdata)):
+        data_pt = newdata[idx]
+        data_struct = aggregate_data[idx]
+        data_struct[colname] = data_pt
+        updated_data.append(data_struct)
+    return updated_data
 
 
 def specify_txs(txs_tuples_list, account_name):
@@ -77,10 +109,13 @@ def lambda_handler(event, context):
     of backend data
     '''
 
-    userid = event['userid']
+    now = datetime.datetime.now()
+
+    placement_key = event['Records'][0]['s3']['object']['key']
+    userid = placement_key.split('/')[1]
     accounts, transactions = get_data(userid)
     accts_dict = {}
-    for account in account:
+    for account in accounts:
         acctname = account['AccountName']
         balance = account['Balance']
         account_type = account['Type']
@@ -88,10 +123,10 @@ def lambda_handler(event, context):
         paysrc = account['PayoffSource']
         creditlim = account['CreditLimit']
 
-        accts_dict[acctname] = account.Account(
+        accts_dict[acctname] = Account(
             name=acctname,
             bal=balance,
-            acc_type=account_type,
+            acct_type=account_type,
             payback_date=paydate,
             payback_src=paysrc,
             credit_limit=creditlim)
@@ -106,7 +141,7 @@ def lambda_handler(event, context):
         src = tx['Source']
         until = tx['Until']
 
-        tx_obj = transaction.Transaction(
+        tx_obj = Transaction(
             f=freq,
             a=amt,
             t=tx_type,
@@ -117,7 +152,7 @@ def lambda_handler(event, context):
         txs_list.append(tx_obj)
 
     days = range(DAYS_TO_PROJECT)
-
+    aggregate_df = []
     # This the actual simulation running through days
     for day in days:
         txs_occurring_today = []
@@ -182,19 +217,23 @@ def lambda_handler(event, context):
         # extend modifies list in place
         datalist.extend(acct_data)
         col_list.extend(acct_names)
-        newrow = pd.DataFrame([datalist], columns=col_list)
+        # newrow = pd.DataFrame([datalist], columns=col_list)
+        # use columns as keys and data as values
+        newrow = OrderedDict({k: v for k, v in zip(col_list, datalist)})
 
-        # pandas dataframe append method returns a dataframe (vs. list append which modifies in place)
-        aggregate_df = aggregate_df.append(newrow, ignore_index=True)
+        aggregate_df.append(newrow)
 
     for curract in accts_dict.keys():
-        acct_specific_txs = [specify_txs(tx, curract) for tx in aggregate_df['transactions']]
-        new_col_name = curract + 'transactions'
-        aggregate_df[new_col_name] = acct_specific_txs
 
-    place_forecasted_data(aggregate_df)
+        acct_specific_txs = [specify_txs(tx, curract) for tx in get_column_data(aggregate_df, 'transactions')]
+
+        new_col_name = f'{curract}transactions'
+        # aggregate_df[new_col_name] = acct_specific_txs
+        aggregate_df = place_column_data(aggregate_df, new_col_name, acct_specific_txs)
+
+    place_forecasted_data(userid, aggregate_df)
 
 
-# with open('event.json') as f:
-#     e = json.load(f)
-# lambda_handler(e, {})
+with open('event.json') as f:
+    e = json.load(f)
+lambda_handler(e, {})

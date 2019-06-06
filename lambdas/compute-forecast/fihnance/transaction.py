@@ -45,7 +45,7 @@ class Transaction(object):
 
         try:
             self.until_date = parser.parse(self.until_date)
-        except TypeError:
+        except (TypeError, ValueError):
             self.until_date = FOREVER_RECURRING
 
     def should_payment_occur_today(self, datetime_object: datetime, check_cycles: int = 1) -> bool:
@@ -56,7 +56,7 @@ class Transaction(object):
         and the frequency indicated
         TODO: this is slow and inefficient
         TODO: intelligent update check_cycle based on sample date and datetime_object
-        :param check_cycles: number of occurrences (in weeks) to check in either direction from sample date 
+        :param check_cycles: number of occurrences (in weeks) to check in either direction from sample date
         """
 
         cycles = range(check_cycles)
@@ -66,7 +66,7 @@ class Transaction(object):
 
         time_delta = datetime_object - self.sample_date
         """
-		if there is more time between the sample date and current simulated day (datetime_obj) 
+		if there is more time between the sample date and current simulated day (datetime_obj)
 		than would be reachable within the check_cycles of frequency
 		then update the sample_date to be further in the future
 		"""
