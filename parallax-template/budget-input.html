@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8" />
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <title>Bootstrap Table with Add and Delete Row Feature</title>
+        <link
+            rel="stylesheet"
+            href="https://fonts.googleapis.com/css?family=Roboto|Varela+Round|Open+Sans"
+        />
+        <link
+            rel="stylesheet"
+            href="https://fonts.googleapis.com/icon?family=Material+Icons"
+        />
+        <link
+            rel="stylesheet"
+            href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css"
+        />
+        <link
+            rel="stylesheet"
+            href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"
+        />
+        <link
+            href="css/materialize.css"
+            type="text/css"
+            rel="stylesheet"
+            media="screen,projection"
+        />
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+        <link rel="stylesheet" href="css/budget-input.css" />
+        <script src="js/budget-input.js"></script>
+    </head>
+    <body>
+        <nav>
+            <div class="nav-wrapper">
+                <div class="col s12">
+                    <a href="/money-ts.html" class="breadcrumb">Money Trends</a>
+                    <a href="/bank-info-input.html" class="breadcrumb"
+                        >Accounts Input</a
+                    >
+                    <a href="/budget-input.html" class="breadcrumb"
+                        >Budget Input</a
+                    >
+                </div>
+            </div>
+        </nav>
+
+        <div class="container">
+            <div class="table-wrapper">
+                <div class="table-title">
+                    <div class="row">
+                        <div class="col-sm-8"><h2>Budget</h2></div>
+                        <div class="col-sm-4">
+                            <button type="button" class="btn btn-info add-new">
+                                <i class="fa fa-plus"></i> Add New
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                <table class="table table-bordered">
+                    <thead>
+                        <tr>
+                            <th>Description</th>
+                            <th>Amount</th>
+                            <th>Occurrence (days)</th>
+                            <th>Type</th>
+                            <th>Sample Date</th>
+                            <th>Source</th>
+                            <th>Until</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <!-- New Data Will Be Inserted Here -->
+                        <tr>
+                            <td>Example Rent [Delete]</td>
+                            <td>$780.00</td>
+                            <td>30</td>
+                            <td>Deduction</td>
+                            <td>4/1/18</td>
+                            <td>Chase Credit Card</td>
+                            <td></td>
+                            <td>
+                                <a class="add" title="Add" data-toggle="tooltip"
+                                    ><i class="material-icons">&#xE03B;</i></a
+                                >
+                                <a
+                                    class="edit"
+                                    title="Edit"
+                                    data-toggle="tooltip"
+                                    ><i class="material-icons">&#xE254;</i></a
+                                >
+                                <a
+                                    class="delete"
+                                    title="Delete"
+                                    data-toggle="tooltip"
+                                    ><i class="material-icons">&#xE872;</i></a
+                                >
+                            </td>
+                        </tr>
+
+                        <tr>
+                            <td>Paycheck</td>
+                            <td>$2980.00</td>
+                            <td>14</td>
+                            <td>Payment</td>
+                            <td>4/15/19</td>
+                            <td>Wells Fargo Checking</td>
+                            <td></td>
+                            <td>
+                                <a class="add" title="Add" data-toggle="tooltip"
+                                    ><i class="material-icons">&#xE03B;</i></a
+                                >
+                                <a
+                                    class="edit"
+                                    title="Edit"
+                                    data-toggle="tooltip"
+                                    ><i class="material-icons">&#xE254;</i></a
+                                >
+                                <a
+                                    class="delete"
+                                    title="Delete"
+                                    data-toggle="tooltip"
+                                    ><i class="material-icons">&#xE872;</i></a
+                                >
+                            </td>
+                        </tr>
+                    </tbody>
+
+                    <tfoot>
+                        <tr>
+                            <td colspan="8" style="text-align: left;">
+                                <button
+                                    class="btn waves-effect waves-light"
+                                    type="submit"
+                                    name="action"
+                                    id="place-budget-data"
+                                >
+                                    Submit Budget & Compute Forecast
+                                    <i class="material-icons right">send</i>
+                                </button>
+                            </td>
+                        </tr>
+                        <tr></tr>
+                    </tfoot>
+                </table>
+            </div>
+        </div>
+    </body>
+
+    <script src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
+    <script src="js/materialize.js"></script>
+    <script src="js/init.js"></script>
+    <script src="js/vendor/aws-cognito-sdk.min.js"></script>
+    <script src="js/vendor/amazon-cognito-identity.min.js"></script>
+    <script src="js/config.js"></script>
+    <script src="js/cognito-auth.js"></script>
+    <script src="js/budget-input.js"></script>
+</html>

@@ -31,7 +31,6 @@ def lambda_handler(event, context):
 
     '''
 
-    operation = event['httpMethod']
     user_uid = event['requestContext']['authorizer']['claims']['sub']
 
     full_path = f"{toplevel_dir}/user_data/{user_uid}/{forecasted_data_filename}"
