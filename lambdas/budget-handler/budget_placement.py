@@ -19,13 +19,13 @@ s3client = boto3.client('s3')
 BUCKETNAME = "financial-engine-data"
 
 DATA_MAP = {'account': {
-    'filename': 'account-balance.csv'
-    'fieldnames': ACCOUNT_FIELDNAMES
+    'filename': 'account-balance.csv',
+    'fieldnames': ACCOUNT_FIELDNAMES,
     'bodykey': 'AccountData'
 
 },
     'budget': {
-    'filename': 'planned-budget.csv'
+    'filename': 'planned-budget.csv',
     'fieldnames': BUDGET_FIELDNAMES,
     'bodykey': 'BudgetData'
 
@@ -50,4 +50,4 @@ def place_budget(userid: str, post_body: dict, entity: str) -> None:
                         Key=f"user_data/{userid}/TEST{data_config['filename']}",
                         Body=output.getvalue())
 
-    return post_body
+    return 100
