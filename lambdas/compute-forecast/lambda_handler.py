@@ -232,8 +232,3 @@ def lambda_handler(event, context):
         aggregate_df = place_column_data(aggregate_df, new_col_name, acct_specific_txs)
 
     place_forecasted_data(userid, aggregate_df)
-
-
-with open('event.json') as f:
-    e = json.load(f)
-lambda_handler(e, {})
