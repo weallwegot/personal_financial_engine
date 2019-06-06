@@ -2,14 +2,7 @@
 
 var WildRydes = window.WildRydes || {};
 
-var colnames = [
-    "AccountName",
-    "Balance",
-    "Type",
-    "PayoffDay",
-    "PayoffSource",
-    "CreditLimit"
-];
+
 
 (function rideScopeWrapper($) {
     var authToken;
@@ -27,9 +20,152 @@ var colnames = [
             window.location.href = "/signin.html";
         });
 
+    var colnames = [
+        "AccountName",
+        "Balance",
+        "Type",
+        "PayoffDay",
+        "PayoffSource",
+        "CreditLimit"
+    ];
+
+    // todo: share functions w/ budget
+    function requestAccountInfo() {
+        $.ajax({
+            method: "POST",
+            url: _config.api.invokeUrl + "/budget-handling",
+            headers: {
+                Authorization: authToken
+            },
+            data: JSON.stringify({
+                RetrieveOrPlace: "retrieve",
+                Entity: "account"
+            }),
+            contentType: "application/json",
+            success: completeRequest,
+            error: function ajaxError(jqXHR, textStatus, errorThrown) {
+                console.error(
+                    "Error requesting ride: ",
+                    textStatus,
+                    ", Details: ",
+                    errorThrown
+                );
+                console.error("Response: ", jqXHR.responseText);
+                alert(
+                    "An error occured when requesting your money trend:\n" +
+                        jqXHR.responseText
+                );
+            }
+        });
+    }
+
+    // complete the request by taking the timeseries data returned and using it to populate the timeseries plot
+    function completeRequest(result) {
+        console.log("Response received from API: ", result);
+        for (idx in result) {
+            var row = result[idx];
+            addNewRow(row);
+        }
+    }
+
+
+    function placeAccountInfo() {
+        $.ajax({
+            method: "POST",
+            url: _config.api.invokeUrl + "/budget-handling",
+            headers: {
+                Authorization: authToken
+            },
+            data: JSON.stringify({
+                RetrieveOrPlace: "place",
+                Entity: "account",
+                AccountData: retrieveTableData()
+            }),
+            contentType: "application/json",
+            success: completePostDataRequest,
+            error: function ajaxError(jqXHR, textStatus, errorThrown) {
+                console.error(
+                    "Error requesting ride: ",
+                    textStatus,
+                    ", Details: ",
+                    errorThrown
+                );
+                console.error("Response: ", jqXHR.responseText);
+                alert(
+                    "An error occured when requesting your money trend:\n" +
+                        jqXHR.responseText
+                );
+            }
+        });
+    }
+
+    function retrieveTableData(event){
+
+        //gets table
+        var oTable = document.getElementsByClassName('table-bordered')[0];
+
+        //gets rows of table
+        var numRows = oTable.rows.length;
+
+        var dictArray = [];
+
+        //loops through rows (minus last ones with the button in it & start at 1 to not include the headers)
+        for (i = 1; i < numRows - 2 ; i++){
+
+          //gets cells of current row
+           var oCells = oTable.rows.item(i).cells;
+
+           //loops through each cell in current row
+           // this should line up with colnames
+           var dataObj = {};
+           for(var j = 0; j < colnames.length; j++){
+
+                  // get your cell info here
+
+                  var cellVal = oCells.item(j).innerHTML;
+                  dataObj[colnames[j]] = cellVal;
+
+               }
+            dictArray.push(dataObj);
+        }
+
+        return dictArray
+
+    }
+
+    // complete the request by taking the timeseries data returned and using it to populate the timeseries plot
+    function completePostDataRequest(result) {
+        console.log("Response received from API: ", result);
+
+    }
+
+    function addNewRow(row) {
+        var actions = $("table td:last-child").html();
+        var index = $("table tbody tr:last-child").index();
+        var rowHTML = "<tr>";
+        for (idx in colnames) {
+            var colname = colnames[idx];
+            rowHTML += `<td>${row[colname]}"</td>`;
+        }
+
+        rowHTML += `<td>${actions}</td>`;
+        rowHTML += "</tr>";
+
+        $("table").append(rowHTML);
+        $("table tbody tr")
+            .eq(index + 1)
+            .find(".add, .edit");
+        $('[data-toggle="tooltip"]').tooltip();
+    }
+
+
     $(document).ready(function() {
         $('[data-toggle="tooltip"]').tooltip();
         var actions = $("table td:last-child").html();
+
+        requestAccountInfo();
+
+        $('#submit-bank-info').click(placeAccountInfo);
 
         // Append table with add row form on add new button click
         $(".add-new").click(function() {

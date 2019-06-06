@@ -35,7 +35,8 @@ var WildRydes = window.WildRydes || {};
                 Authorization: authToken
             },
             data: JSON.stringify({
-                RetrieveOrPlace: "retrieve"
+                RetrieveOrPlace: "retrieve",
+                Entity: "budget"
             }),
             contentType: "application/json",
             success: completeRequest,
@@ -74,6 +75,7 @@ var WildRydes = window.WildRydes || {};
             },
             data: JSON.stringify({
                 RetrieveOrPlace: "place",
+                Entity: "budget",
                 BudgetData: retrieveTableData()
             }),
             contentType: "application/json",
