@@ -15,6 +15,12 @@ p {
   line-height: 2rem;
 }
 
+.breadcrumb {
+
+  padding:8px 15px;
+  background-color:transparent;!important
+}
+
 .sidenav-trigger {
   color: #26a69a;
 }
