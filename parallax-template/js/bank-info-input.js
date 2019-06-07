@@ -155,12 +155,12 @@ var WildRydes = window.WildRydes || {};
         $("table tbody tr")
             .eq(index + 1)
             .find(".add, .edit");
-        $('[data-toggle="tooltip"]').tooltip();
+        // $('[data-toggle="tooltip"]').tooltip();
     }
 
 
     $(document).ready(function() {
-        $('[data-toggle="tooltip"]').tooltip();
+        // $('[data-toggle="tooltip"]').tooltip();
         var actions = $("table td:last-child").html();
 
         requestAccountInfo();
@@ -186,7 +186,7 @@ var WildRydes = window.WildRydes || {};
                 .eq(index + 1)
                 .find(".add, .edit")
                 .toggle();
-            $('[data-toggle="tooltip"]').tooltip();
+            //$('[data-toggle="tooltip"]').tooltip();
         });
 
         // Add row on add button click

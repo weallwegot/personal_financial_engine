@@ -152,11 +152,11 @@ var WildRydes = window.WildRydes || {};
         $("table tbody tr")
             .eq(index + 1)
             .find(".add, .edit");
-        $('[data-toggle="tooltip"]').tooltip();
+        // $('[data-toggle="tooltip"]').tooltip();
     }
 
     $(document).ready(function() {
-        $('[data-toggle="tooltip"]').tooltip();
+        // $('[data-toggle="tooltip"]').tooltip();
         var actions = $("table td:last-child").html();
         requestBudgetInfo();
         $('#place-budget-data').click(placeBudgetInfo);
@@ -179,7 +179,7 @@ var WildRydes = window.WildRydes || {};
                 .eq(index + 1)
                 .find(".add, .edit")
                 .toggle();
-            $('[data-toggle="tooltip"]').tooltip();
+            // $('[data-toggle="tooltip"]').tooltip();
         });
 
 
