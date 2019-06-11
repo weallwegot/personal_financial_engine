@@ -145,7 +145,7 @@ var WildRydes = window.WildRydes || {};
         var rowHTML = "<tr>";
         for (idx in colnames) {
             var colname = colnames[idx];
-            rowHTML += `<td>${row[colname]}"</td>`;
+            rowHTML += `<td>${row[colname]}</td>`;
         }
 
         rowHTML += `<td>${actions}</td>`;
