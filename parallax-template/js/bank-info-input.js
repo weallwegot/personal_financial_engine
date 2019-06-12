@@ -29,6 +29,8 @@ var WildRydes = window.WildRydes || {};
         "CreditLimit"
     ];
 
+    var actions = $("table td:last-child").html();
+
     // todo: share functions w/ budget
     function requestAccountInfo() {
         $.ajax({
