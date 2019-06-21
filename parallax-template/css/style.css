@@ -15,6 +15,14 @@ p {
   line-height: 2rem;
 }
 
+.breadcrumb, .breadcrumb:last-child {
+
+  padding:8px 15px;
+  color: white;
+  background-color:transparent;!important
+}
+
+
 .sidenav-trigger {
   color: #26a69a;
 }

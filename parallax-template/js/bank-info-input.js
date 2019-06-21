@@ -29,6 +29,8 @@ var WildRydes = window.WildRydes || {};
         "CreditLimit"
     ];
 
+    var actions = $("table td:last-child").html();
+
     // todo: share functions w/ budget
     function requestAccountInfo() {
         $.ajax({
@@ -145,7 +147,7 @@ var WildRydes = window.WildRydes || {};
         var rowHTML = "<tr>";
         for (idx in colnames) {
             var colname = colnames[idx];
-            rowHTML += `<td>${row[colname]}"</td>`;
+            rowHTML += `<td>${row[colname]}</td>`;
         }
 
         rowHTML += `<td>${actions}</td>`;
@@ -155,12 +157,12 @@ var WildRydes = window.WildRydes || {};
         $("table tbody tr")
             .eq(index + 1)
             .find(".add, .edit");
-        $('[data-toggle="tooltip"]').tooltip();
+        // $('[data-toggle="tooltip"]').tooltip();
     }
 
 
     $(document).ready(function() {
-        $('[data-toggle="tooltip"]').tooltip();
+        // $('[data-toggle="tooltip"]').tooltip();
         var actions = $("table td:last-child").html();
 
         requestAccountInfo();
@@ -186,7 +188,7 @@ var WildRydes = window.WildRydes || {};
                 .eq(index + 1)
                 .find(".add, .edit")
                 .toggle();
-            $('[data-toggle="tooltip"]').tooltip();
+            //$('[data-toggle="tooltip"]').tooltip();
         });
 
         // Add row on add button click
