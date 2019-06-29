@@ -39,7 +39,13 @@ class Transaction(object):
         elif self.transaction_type.lower() == 'payment':
             pass
 
-        self.frequency = Q_(self.frequency.replace('d', 'day').replace('w', 'week').replace(' ', '+')).to('week')
+        try:
+
+            self.frequency = Q_(self.frequency.replace('d', 'day').replace('w', 'week').replace(' ', '+')).to('week')
+
+        except ValueError:
+            logger.info(f'received frequency of {self.frequency} assuming units of days')
+            self.frequency = Q_(f'{self.frequency} days')
 
         self.sample_date = parser.parse(self.sample_date)
 
@@ -66,10 +72,10 @@ class Transaction(object):
 
         time_delta = datetime_object - self.sample_date
         """
-		if there is more time between the sample date and current simulated day (datetime_obj)
-		than would be reachable within the check_cycles of frequency
-		then update the sample_date to be further in the future
-		"""
+        if there is more time between the sample date and current simulated day (datetime_obj)
+        than would be reachable within the check_cycles of frequency
+        then update the sample_date to be further in the future
+        """
         # frequency is a quantity with units so update weeks to days before comparing integers
         range_of_time_reachable = (self.frequency * check_cycles).to('days')
         while abs(time_delta.days) > range_of_time_reachable.magnitude:
