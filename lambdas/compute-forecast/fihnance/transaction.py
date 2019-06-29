@@ -23,7 +23,7 @@ class Transaction(object):
         self.transaction_type = t
         self.description = d
         self.sample_date = sd
-        self.source = sc
+        self.source = sc.strip().upper()
         self.until_date = u
         self._parse_attributes()
 
