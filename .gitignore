@@ -5,7 +5,7 @@ __pycache__/
 
 #sample aws template
 aws-wildrydes-web*
-
+**.zip
 ## personal data files
 **money_io.csv
 **my_*.csv
