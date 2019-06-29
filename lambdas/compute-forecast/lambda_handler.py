@@ -63,7 +63,7 @@ def place_forecasted_data(userid: str, tx_data: List[OrderedDict]) -> None:
             logger.warning(f"Posted Data Fields {entry.keys()} incompatible with expectations {FIELDNAMES}")
 
     s3client.put_object(Bucket="financial-engine-data",
-                        Key=f"user_data/{userid}/TEST{TX_DATA_FILENAME}",
+                        Key=f"user_data/{userid}/{TX_DATA_FILENAME}",
                         Body=output.getvalue())
 
 

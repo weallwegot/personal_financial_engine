@@ -2,7 +2,7 @@ from definitions import Q_, CHECKING, CREDIT, VALID_ACCT_TYPES
 import logging
 
 from fihnance.transaction import Transaction
-from numpy import float64
+#from numpy import float64
 from typing import Union, Optional
 logger = logging.getLogger('finance_app')
 
@@ -20,7 +20,7 @@ class Account(AccountInterface):
                  name: str,
                  bal: str,
                  acct_type: str,
-                 payback_date: Optional[float64] = None,
+                 payback_date: Optional[float] = None,
                  payback_src: Optional[Union[str, float]]=None,
                  credit_limit: Optional[Union[str, float]]=None) -> None:
 
@@ -46,7 +46,7 @@ class Account(AccountInterface):
             if 28 > int(self.payback_date) > 0:
                 self.payback_date = int(self.payback_date)
 
-            self.credit_limit = Q_(float(self.credit_limit.replace('$', '')), 'usd')
+            self.credit_limit = Q_(float(self.credit_limit.replace('$', '').replace(',', '')), 'usd')
 
     def process_tx(self, amount_extractable_obj: Union[AccountInterface, Transaction]) -> None:
         """
@@ -64,7 +64,7 @@ class Account(AccountInterface):
             bal_credit_ratio = round(abs(self.balance / self.credit_limit) * 100., 1)
             if bal_credit_ratio > 20:
                 logger.info("{}\nbe careful, you're debt/limit ratio is {}%\n\
-					anything over 20% may hurt your credit score."
+                    anything over 20% may hurt your credit score."
                             .format(self, bal_credit_ratio))
 
         elif self.acct_type == CHECKING:
@@ -93,11 +93,11 @@ class Account(AccountInterface):
 
             else:
                 logger.warning("Need to payoff_credt_acct with a checking account.\
-					Skipping this operation.")
+                    Skipping this operation.")
                 return
 
         else:
             logger.warning("Cannot payoff_credit_acct with {} type acct.\n\
-				skipping this operation."
+                skipping this operation."
                            .format(account_object.acct_type))
             return

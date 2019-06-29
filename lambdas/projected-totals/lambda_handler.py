@@ -31,6 +31,7 @@ def lambda_handler(event, context):
 
     '''
 
+    operation = event['httpMethod']
     user_uid = event['requestContext']['authorizer']['claims']['sub']
 
     full_path = f"{toplevel_dir}/user_data/{user_uid}/{forecasted_data_filename}"
@@ -43,7 +44,10 @@ def lambda_handler(event, context):
             day_total = sum([float(v) for k, v in row.items()
                              if k not in COLUMS_WITHOUT_ACCOUNT_TOTALS and not k.endswith('transactions')])
             row['daily_total'] = day_total
-            row.pop("")
+            try:
+                row.pop("")
+            except KeyError:
+                pass
 
             rows.append(row)
 
