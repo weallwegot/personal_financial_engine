@@ -4,7 +4,7 @@
         <meta charset="utf-8" />
         <meta http-equiv="X-UA-Compatible" content="IE=edge" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
-        <title>Bootstrap Table with Add and Delete Row Feature</title>
+        <title>I'm not THAT Broke</title>
         <link
             rel="stylesheet"
             href="https://fonts.googleapis.com/css?family=Roboto|Varela+Round|Open+Sans"
@@ -17,10 +17,10 @@
             rel="stylesheet"
             href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css"
         />
-        <link
+<!--         <link
             rel="stylesheet"
             href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"
-        />
+        /> -->
         <link
             href="css/materialize.min.css"
             type="text/css"
@@ -53,6 +53,20 @@
             </div>
         </nav>
 
+
+
+        <div id="modal-bank-input-error-help" class="modal">
+            <div class="modal-content">
+              <h6>Help Me Help You</h6>
+              <p>Fill out the table below with your own account balances.💰</p>
+              <p>Don't forget to delete the sample entries. happy planning! 📈</p>
+            </div>
+            <div class="modal-footer">
+              <a href="#" class="modal-close waves-effect waves-green btn-flat">Ok</a>
+            </div>
+        </div>
+
+
         <div class="container">
             <div class="table-wrapper">
                 <div class="table-title">
@@ -67,7 +81,7 @@
                         </div>
                     </div>
                 </div>
-                <table class="table table-bordered">
+                <table class="table striped responsive-table">
                     <thead>
                         <tr>
                             <th>Account Name</th>
@@ -113,7 +127,7 @@
                             <td>Credit</td>
                             <td>1</td>
                             <td>Wells Fargo Checking</td>
-                            <td>%9,000.00</td>
+                            <td>$9,000.00</td>
                             <td>
                                 <a class="add" title="Add" data-toggle="tooltip"
                                     ><i class="material-icons">&#xE03B;</i></a

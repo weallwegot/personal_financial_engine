@@ -40,10 +40,13 @@ var WildRydes = window.WildRydes || {};
                     errorThrown
                 );
                 console.error("Response: ", jqXHR.responseText);
-                alert(
-                    "An error occured when requesting your money trend:\n" +
-                        jqXHR.responseText
-                );
+
+                $("#modal-money-ts-error-help").modal("open")
+
+                // alert(
+                //     "An error occured when requesting your money trend:\n" +
+                //         jqXHR.responseText
+                // );
             }
         });
     }
@@ -97,6 +100,11 @@ var WildRydes = window.WildRydes || {};
             alert("You have been signed out.");
             window.location = "signin.html";
         });
+
+
+        var modal_elems = document.querySelectorAll('.modal')
+        M.Modal.init(modal_elems,{})
+
         requestMoneyTimeseries();
 
         WildRydes.authToken.then(function updateAuthMessage(token) {

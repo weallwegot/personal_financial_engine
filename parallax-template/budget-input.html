@@ -4,7 +4,7 @@
         <meta charset="utf-8" />
         <meta http-equiv="X-UA-Compatible" content="IE=edge" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
-        <title>Bootstrap Table with Add and Delete Row Feature</title>
+        <title>Lemme Get This Budget Right</title>
         <link
             rel="stylesheet"
             href="https://fonts.googleapis.com/css?family=Roboto|Varela+Round|Open+Sans"
@@ -17,10 +17,10 @@
             rel="stylesheet"
             href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css"
         />
-        <link
+<!--         <link
             rel="stylesheet"
             href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"
-        />
+        /> -->
         <link
             href="css/materialize.min.css"
             type="text/css"
@@ -53,6 +53,21 @@
             </div>
         </nav>
 
+
+      <div id="modal-budget-input-error-help" class="modal">
+        <div class="modal-content">
+          <h6>Almost There</h6>
+          <p>It looks like we weren't able to pull up any budget input.😔</p>
+          <p>Fill out the table below with your own budget.💰</p>
+          <p>Don't forget to delete the sample entries. happy planning! 📈</p>
+          <p>If you've already filled out your Account Balances, we will be able to computer your money forecast!👨🏾‍💻☀️</p>
+        </div>
+        <div class="modal-footer">
+          <a href="#" class="modal-close waves-effect waves-green btn-flat">Ok</a>
+        </div>
+      </div>
+
+
         <div class="container">
             <div class="table-wrapper">
                 <div class="table-title">
@@ -65,7 +80,7 @@
                         </div>
                     </div>
                 </div>
-                <table class="table table-bordered">
+                <table class="table striped responsive-table">
                     <thead>
                         <tr>
                             <th>Description</th>

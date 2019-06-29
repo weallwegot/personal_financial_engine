@@ -48,10 +48,12 @@ var WildRydes = window.WildRydes || {};
                     errorThrown
                 );
                 console.error("Response: ", jqXHR.responseText);
-                alert(
-                    "An error occured when requesting your money trend:\n" +
-                        jqXHR.responseText
-                );
+
+                $("#modal-budget-input-error-help").modal("open");
+                // alert(
+                //     "An error occured when requesting your money trend:\n" +
+                //         jqXHR.responseText
+                // );
             }
         });
     }
@@ -88,8 +90,9 @@ var WildRydes = window.WildRydes || {};
                     errorThrown
                 );
                 console.error("Response: ", jqXHR.responseText);
+
                 alert(
-                    "An error occured when requesting your money trend:\n" +
+                    "An error occured when posting your budget!:\n" +
                         jqXHR.responseText
                 );
             }
@@ -156,6 +159,8 @@ var WildRydes = window.WildRydes || {};
     }
 
     $(document).ready(function() {
+        var modal_elems = document.querySelectorAll('.modal')
+        M.Modal.init(modal_elems,{})
         // $('[data-toggle="tooltip"]').tooltip();
         var actions = $("table td:last-child").html();
         requestBudgetInfo();
