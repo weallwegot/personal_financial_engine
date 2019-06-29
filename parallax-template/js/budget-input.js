@@ -102,7 +102,7 @@ var WildRydes = window.WildRydes || {};
     function retrieveTableData(event){
 
         //gets table
-        var oTable = document.getElementsByClassName('table-bordered')[0];
+        var oTable = document.getElementsById('budget-table');//'table-bordered')[0];
 
         //gets rows of table
         var numRows = oTable.rows.length;
