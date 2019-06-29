@@ -16,6 +16,7 @@ from fihnance.account import Account
 from fihnance.transaction import Transaction
 
 logger = logging.getLogger()
+logger.setLevel(logging.INFO)
 
 my_s3fs = s3fs.S3FileSystem()
 toplevel_dir = "s3://financial-engine-data"
@@ -114,7 +115,8 @@ def lambda_handler(event, context):
     placement_key = event['Records'][0]['s3']['object']['key']
     userid = placement_key.split('/')[1]
     accounts, transactions = get_data(userid)
-    accts_dict = {}
+    #accts_dict = {}
+    accts_list = []
     for account in accounts:
         acctname = account['AccountName']
         balance = account['Balance']
@@ -123,13 +125,15 @@ def lambda_handler(event, context):
         paysrc = account['PayoffSource']
         creditlim = account['CreditLimit']
 
-        accts_dict[acctname] = Account(
+        accts_list.append(Account(
             name=acctname,
             bal=balance,
             acct_type=account_type,
             payback_date=paydate,
             payback_src=paysrc,
-            credit_limit=creditlim)
+            credit_limit=creditlim))
+
+    accts_dict = {acct.name: acct for acct in accts_list}
 
     txs_list = []
     for tx in transactions:

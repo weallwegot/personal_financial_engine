@@ -4,10 +4,12 @@ import logging
 from fihnance.transaction import Transaction
 #from numpy import float64
 from typing import Union, Optional
-logger = logging.getLogger('finance_app')
-
+logger = logging.getLogger()
+logger.setLevel(logging.INFO)
 
 # just used for type checking, not sure if this destroys the point
+
+
 class AccountInterface():
 
     def __init__(self):

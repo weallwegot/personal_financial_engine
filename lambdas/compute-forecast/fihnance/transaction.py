@@ -4,7 +4,8 @@ import logging
 from datetime import datetime
 from typing import Union, Optional
 
-logger = logging.getLogger('finance_app')
+logger = logging.getLogger()
+logger.setLevel(logging.INFO)
 
 
 class Transaction(object):
