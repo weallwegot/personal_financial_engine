@@ -41,7 +41,7 @@ var WildRydes = window.WildRydes || {};
                 );
                 console.error("Response: ", jqXHR.responseText);
 
-                $("#modal-error-help").modal("open")
+                $("#modal-money-ts-error-help").modal("open")
 
                 // alert(
                 //     "An error occured when requesting your money trend:\n" +
