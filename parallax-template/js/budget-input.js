@@ -102,7 +102,7 @@ var WildRydes = window.WildRydes || {};
     function retrieveTableData(event){
 
         //gets table
-        var oTable = document.getElementsById('budget-table');//'table-bordered')[0];
+        var oTable = document.getElementById('budget-table');//'table-bordered')[0];
 
         //gets rows of table
         var numRows = oTable.rows.length;
@@ -135,7 +135,11 @@ var WildRydes = window.WildRydes || {};
 
     // complete the request by taking the timeseries data returned and using it to populate the timeseries plot
     function completePostDataRequest(result) {
+        console.log('successfully posted budget info data')
+        M.toast({html: "Congrats, we received your Budget Info",
+            classes:"success-toast"});
         console.log("Response received from API: ", result);
+
 
     }
 

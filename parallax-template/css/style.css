@@ -15,6 +15,16 @@ p {
   line-height: 2rem;
 }
 
+.failed-toast{
+  background-color:red;
+
+}
+
+.success-toast{
+
+  background-color:green;
+}
+
 .breadcrumb, .breadcrumb:last-child {
 
   padding:8px 15px;
