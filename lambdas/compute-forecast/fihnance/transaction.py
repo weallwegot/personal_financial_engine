@@ -66,7 +66,7 @@ class Transaction(object):
         :param check_cycles: number of occurrences (in weeks) to check in either direction from sample date
         """
 
-        cycles = range(check_cycles)
+        cycles = range(check_cycles + 1)
         dtc = datetime_object.day
         mtc = datetime_object.month
         ytc = datetime_object.year
@@ -79,7 +79,9 @@ class Transaction(object):
         """
         # frequency is a quantity with units so update weeks to days before comparing integers
         range_of_time_reachable = (self.frequency * check_cycles).to('days')
-        while abs(time_delta.days) > range_of_time_reachable.magnitude:
+        # import ipdb
+        # ipdb.set_trace()
+        while abs(time_delta.days) >= range_of_time_reachable.magnitude:
             # if time_delta days is positive, then the sample date is too far in the past, step forward
             if time_delta.days > 0:
                 self.sample_date += range_of_time_reachable

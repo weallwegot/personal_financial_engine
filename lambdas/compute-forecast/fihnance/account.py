@@ -30,7 +30,7 @@ class Account(AccountInterface):
         self.balance = Q_(float(bal.replace('$', '')), 'usd')
         self.acct_type = acct_type.upper()
         self.payback_date = payback_date
-        self.payback_src = payback_src
+        self.payback_src = payback_src.strip().upper()
 
         self.credit_limit = credit_limit
         self._validate()
