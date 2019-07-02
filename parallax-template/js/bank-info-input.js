@@ -173,6 +173,8 @@ var WildRydes = window.WildRydes || {};
         M.Modal.init(modal_elems,{})
         // $('[data-toggle="tooltip"]').tooltip();
         var actions = $("table td:last-child").html();
+        var elems = document.querySelectorAll('.tooltipped');
+        var instances = M.Tooltip.init(elems, options);
 
         requestAccountInfo();
 

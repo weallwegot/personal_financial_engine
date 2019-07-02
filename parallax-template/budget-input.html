@@ -75,7 +75,7 @@
                         <div class="col-sm-8"><h2>Budget</h2></div>
                         <div class="col-sm-4">
                             <button type="button" class="btn btn-info add-new">
-                                <i class="fa fa-plus"></i> Add New
+                                <i class="fa tooltipped fa-plus"></i> Add New
                             </button>
                         </div>
                     </div>
@@ -83,14 +83,14 @@
                 <table id="budget-table" class="table striped responsive-table">
                     <thead>
                         <tr>
-                            <th>Description</th>
-                            <th>Amount</th>
-                            <th>Occurrence (days)</th>
-                            <th>Type</th>
-                            <th>Sample Date</th>
-                            <th>Source</th>
-                            <th>Until</th>
-                            <th>Actions</th>
+                            <th>Description<i  data-tooltip="Describe the line item!" class="fa tooltipped fa-info-circle"></i></th>
+                            <th>Amount <i  data-tooltip="How much will it cost you? '$' sign optional"class="fa tooltipped fa-info-circle"></i></th>
+                            <th>Occurrence (days) <i  data-tooltip="How frequently does this expense occur?" class="fa tooltipped fa-info-circle"></i></th>
+                            <th>Type <i  data-tooltip="Money In or Money Out?" class="fa tooltipped fa-info-circle"></i></th>
+                            <th>Sample Date <i  data-tooltip="Give an example of a date when this transaction occurred." class="fa tooltipped fa-info-circle"></i></th>
+                            <th>Source <i  data-tooltip="Which account will the funds come from?"class="fa tooltipped fa-info-circle"></i></th>
+                            <th>Until <i  data-tooltip="When does this transaction stop happening? If it's recurring forever, throw a '-' in the field" class="fa tooltipped fa-info-circle"></i></th>
+                            <th>Actions <i  data-tooltip="edit/delete a particular budget line item" class="fa tooltipped fa-info-circle"></i></th>
                         </tr>
                     </thead>
                     <tbody>
@@ -104,19 +104,19 @@
                             <td>Chase Credit Card</td>
                             <td></td>
                             <td>
-                                <a class="add" title="Add" data-toggle="tooltip"
+                                <a class="add tooltipped" data-tooltip="Add"
                                     ><i class="material-icons">&#xE03B;</i></a
                                 >
                                 <a
-                                    class="edit"
-                                    title="Edit"
-                                    data-toggle="tooltip"
+                                    class="edit tooltipped"
+                                    data-tooltip="Edit"
+
                                     ><i class="material-icons">&#xE254;</i></a
                                 >
                                 <a
-                                    class="delete"
-                                    title="Delete"
-                                    data-toggle="tooltip"
+                                    class="delete tooltipped"
+                                    data-tooltip="Delete"
+
                                     ><i class="material-icons">&#xE872;</i></a
                                 >
                             </td>
