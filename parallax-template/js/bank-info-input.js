@@ -174,7 +174,7 @@ var WildRydes = window.WildRydes || {};
         // $('[data-toggle="tooltip"]').tooltip();
         var actions = $("table td:last-child").html();
         var elems = document.querySelectorAll('.tooltipped');
-        var instances = M.Tooltip.init(elems, options);
+        var instances = M.Tooltip.init(elems, {});
 
         requestAccountInfo();
 

@@ -165,6 +165,8 @@ var WildRydes = window.WildRydes || {};
     $(document).ready(function() {
         var modal_elems = document.querySelectorAll('.modal')
         M.Modal.init(modal_elems,{})
+        var elems = document.querySelectorAll('.tooltipped');
+        var instances = M.Tooltip.init(elems, {});
         // $('[data-toggle="tooltip"]').tooltip();
         var actions = $("table td:last-child").html();
         requestBudgetInfo();
@@ -232,6 +234,7 @@ var WildRydes = window.WildRydes || {};
                 .parents("tr")
                 .find("td:not(:last-child)")
                 .each(function() {
+                    // need some logic to skip dropdowns and & radio buttons
                     $(this).html(
                         '<input type="text" class="form-control" value="' +
                             $(this).text() +
