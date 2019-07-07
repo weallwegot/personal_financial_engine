@@ -27,6 +27,11 @@ var WildRydes = window.WildRydes || {};
         "Until"
     ];
 
+    // variable for keeping track of groups of input radio buttons
+    var inputRadioButtonGroupId=0;
+    // variable for keywords indicating columns to skip
+    var skipColKeywords = ["<p>","</p>","<span>","</span>","radio","<label>","</label>"];
+
     function requestBudgetInfo() {
         $.ajax({
             method: "POST",
@@ -63,7 +68,7 @@ var WildRydes = window.WildRydes || {};
         console.log("Response received from API: ", result);
         for (idx in result) {
             var row = result[idx];
-            addNewRow(row);
+            addNewRowFromRetrievedData(row);
         }
         $(".sample").remove()
     }
@@ -120,11 +125,28 @@ var WildRydes = window.WildRydes || {};
            // this should line up with colnames
            var dataObj = {};
            for(var j = 0; j < colnames.length; j++){
-
                   // get your cell info here
-
+                  var colname = colnames[j];
                   var cellVal = oCells.item(j).innerHTML;
-                  dataObj[colnames[j]] = cellVal;
+                  if(colnames[j]=="Type"){
+                    var labelElements = oCells.item(j).getElementsByTagName("label");
+                    for(idx in labelElements){
+                        var labelElement = labelElements[idx];
+                        var spanInnerText = labelElement.getElementsByTagName("span")[0].innerText;
+                        var inputIsChecked = labelElement.getElementsByTagName("input")[0].checked;
+                        if(inputIsChecked){
+                            if(spanInnerText=="In"){
+                                dataObj[colname] = "Payment";
+                            } else if(spanInnerText=="Out") {
+                                dataObj[colname] = "Deduction";
+                            }
+                        }
+                    }
+
+                    // dataObj[colname] = oCells.item(j);
+                  } else {
+                    dataObj[colname] = cellVal;
+                  }
 
                }
             dictArray.push(dataObj);
@@ -144,13 +166,32 @@ var WildRydes = window.WildRydes || {};
 
     }
 
-    function addNewRow(row) {
+    function addNewRowFromRetrievedData(row) {
         var actions = $("table td:last-child").html();
         var index = $("table tbody tr:last-child").index();
         var rowHTML = "<tr>";
         for (idx in colnames) {
             var colname = colnames[idx];
-            rowHTML += `<td>${row[colname]}</td>`;
+            if(colname=="Type"){
+
+                inputRadioButtonGroupId += 1
+                rowHTML += `<td><p>
+                                <label>
+                                  <input name="group${inputRadioButtonGroupId}" type="radio"/>
+                                  <span>In</span>
+                                </label>
+                                <label>
+                                  <input name="group${inputRadioButtonGroupId}" type="radio" checked />
+                                  <span>Out</span>
+                                </label>
+                              </p>
+                            </td>`
+
+
+            } else{
+                rowHTML += `<td>${row[colname]}</td>`;
+            }
+
         }
 
         rowHTML += `<td>${actions}</td>`;
@@ -178,11 +219,29 @@ var WildRydes = window.WildRydes || {};
             var index = $("table tbody tr:last-child").index();
             var row_html = "<tr>";
             for (idx in colnames) {
-                row_html += `<td><input type="text" class="form-control" name="${
-                    colnames[idx]
-                }" id="${colnames[idx]}"</td>`;
-            }
+                var colname = colnames[idx];
 
+
+                if(colname=="Type"){
+
+                inputRadioButtonGroupId += 1
+                row_html += `<td><p>
+                                <label>
+                                  <input name="group${inputRadioButtonGroupId}" type="radio"/>
+                                  <span>In</span>
+                                </label>
+                                <label>
+                                  <input name="group${inputRadioButtonGroupId}" type="radio" checked />
+                                  <span>Out</span>
+                                </label>
+                              </p>
+                            </td>`
+                } else {
+
+                    row_html += `<td><input type="text" class="form-control" name="${colname}" id="${colname}"</td>`;
+                }
+
+            }
             row_html += `<td>${actions}</td>`;
             row_html += "</tr>";
 
@@ -235,12 +294,17 @@ var WildRydes = window.WildRydes || {};
                 .parents("tr")
                 .find("td:not(:last-child)")
                 .each(function() {
-                    // need some logic to skip dropdowns and & radio buttons
-                    $(this).html(
-                        '<input type="text" class="form-control" value="' +
-                            $(this).text() +
-                            '">'
-                    );
+                    // need some logic to skip dropdowns & radio buttons
+                    var innerHTML = $(this).html();
+                    var shouldSkip = skipColKeywords.every(el=>innerHTML.includes(el))
+                    if(!shouldSkip){
+                        $(this).html(
+                            '<input type="text" class="form-control" value="' +
+                                $(this).text() +
+                                '">'
+                        );
+
+                    }
                 });
             $(this)
                 .parents("tr")
