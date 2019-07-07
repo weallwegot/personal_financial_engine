@@ -130,8 +130,11 @@ var WildRydes = window.WildRydes || {};
                   var cellVal = oCells.item(j).innerHTML;
                   if(colnames[j]=="Type"){
                     var labelElements = oCells.item(j).getElementsByTagName("label");
-                    for(idx in labelElements){
-                        var labelElement = labelElements[idx];
+                    // use array.from to make html collection iterable
+                    Array.from(labelElements).forEach(labelElement =>{
+
+                        // for(idx in labelElements)
+                        // var labelElement = labelElements[idx];
                         var spanInnerText = labelElement.getElementsByTagName("span")[0].innerText;
                         var inputIsChecked = labelElement.getElementsByTagName("input")[0].checked;
                         if(inputIsChecked){
@@ -141,9 +144,10 @@ var WildRydes = window.WildRydes || {};
                                 dataObj[colname] = "Deduction";
                             }
                         }
-                    }
 
-                    // dataObj[colname] = oCells.item(j);
+
+                    })
+
                   } else {
                     dataObj[colname] = cellVal;
                   }
@@ -174,14 +178,17 @@ var WildRydes = window.WildRydes || {};
             var colname = colnames[idx];
             if(colname=="Type"){
 
+                var moneyInChecked = (row[colname].includes("Payment")) ? "checked" : ""
+                var moneyOutChecked = (row[colname].includes("Deduction")) ? "checked" : ""
+
                 inputRadioButtonGroupId += 1
                 rowHTML += `<td><p>
                                 <label>
-                                  <input name="group${inputRadioButtonGroupId}" type="radio"/>
+                                  <input name="group${inputRadioButtonGroupId}" type="radio" ${moneyInChecked}/>
                                   <span>In</span>
                                 </label>
                                 <label>
-                                  <input name="group${inputRadioButtonGroupId}" type="radio" checked />
+                                  <input name="group${inputRadioButtonGroupId}" type="radio" ${moneyOutChecked}/>
                                   <span>Out</span>
                                 </label>
                               </p>
