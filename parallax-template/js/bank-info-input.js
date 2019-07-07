@@ -68,7 +68,7 @@ var WildRydes = window.WildRydes || {};
         console.log("Response received from API: ", result);
         for (idx in result) {
             var row = result[idx];
-            addNewRow(row);
+            addNewRowFromRetrievedData(row);
         }
         $(".sample").remove()
 
@@ -150,7 +150,7 @@ var WildRydes = window.WildRydes || {};
 
     }
 
-    function addNewRow(row) {
+    function addNewRowFromRetrievedData(row) {
         var actions = $("table td:last-child").html();
         var index = $("table tbody tr:last-child").index();
         var rowHTML = "<tr>";
