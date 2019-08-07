@@ -136,7 +136,7 @@ var WildRydes = window.WildRydes || {};
                   // get your cell info here
                   var colname = colnames[j];
                   var cellVal = oCells.item(j).innerHTML;
-                  if(colnames[j]=="Type"){
+                  if(colname=="Type"){
                     var labelElements = oCells.item(j).getElementsByTagName("label");
                     // use Array.from to make html collection iterable
                     Array.from(labelElements).forEach(labelElement =>{
@@ -156,9 +156,11 @@ var WildRydes = window.WildRydes || {};
 
                     })
 
-                  } else if(colnames[j]=="Source") {
+                  } else if(colname=="Source") {
                     // create the dropdown but make it disabled when we read the data in and only enable on "edit" button press
-                    dataObj
+
+                    var chosenAccount = oCells.item(j).getElementsByTagName("input")[0].value;
+                    dataObj[colname] = chosenAccount;
 
                   }
 
@@ -235,7 +237,7 @@ var WildRydes = window.WildRydes || {};
                     accountSelector.options.add(newOption)
                 }
 
-                accountSelector.disabled = true;
+                accountSelector.disabled = false;
 
 
 
@@ -311,7 +313,7 @@ var WildRydes = window.WildRydes || {};
                         accountSelector.options.add(newOption)
                     }
 
-                    accountSelector.disabled = true;
+                    accountSelector.disabled = false;
 
 
 
