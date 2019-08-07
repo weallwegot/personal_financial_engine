@@ -71,9 +71,10 @@ var WildRydes = window.WildRydes || {};
     // complete the request by taking the timeseries data returned and using it to populate the timeseries plot
     function completeRequest(result) {
         console.log("Response received from API: ", result);
-        for (idx in result) {
-            var row = result[idx];
-            addNewRowFromRetrievedData(row);
+        var accountItems = result.BudgetItems
+        for (idx in accountItems) {
+            var accountRow = accountItems[idx];
+            addNewRowFromRetrievedData(accountRow);
         }
         $(".sample").remove()
 
