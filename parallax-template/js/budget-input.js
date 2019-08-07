@@ -217,7 +217,15 @@ var WildRydes = window.WildRydes || {};
                 //                 sourceSelector.options.add(newOption);
                 //             });
 
-                row_html += ``
+                var dropDownOptionsHTML = ""
+                for(idxAcctName in accountNames){
+                    var currAcctName = accountNames[idxAcctName];
+                    dropDownOptionsHTML += `"<option value="${currAcctName}">${currAcctName}</option>`
+                }
+
+
+
+                row_html += `<td><select>${dropDownOptionsHTML}</select></td>`
 
 
             }
