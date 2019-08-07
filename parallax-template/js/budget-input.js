@@ -217,15 +217,23 @@ var WildRydes = window.WildRydes || {};
                 //                 sourceSelector.options.add(newOption);
                 //             });
 
-                var dropDownOptionsHTML = ""
+                var dropDownOptionsHTML = ``
+                var accountSelector = document.createElement("select");
                 for(idxAcctName in accountNames){
                     var currAcctName = accountNames[idxAcctName];
-                    dropDownOptionsHTML += `"<option value="${currAcctName}">${currAcctName}</option>`
+                    dropDownOptionsHTML += `<option value="${currAcctName}">${currAcctName}</option>`;
+
+                    var newOption = document.createElement("option");
+                    newOption.innerHTML = currAcctName;
+                    newOption.value = currAcctName;
+                    accountSelector.options.add(newOption)
                 }
 
+                accountSelector.disabled = true;
 
 
-                row_html += `<td><select>${dropDownOptionsHTML}</select></td>`
+
+                rowHTML += `<td><div class="input-field">${accountSelector.outerHTML}</div></td>`;
 
 
             }
@@ -243,6 +251,11 @@ var WildRydes = window.WildRydes || {};
         $("table tbody tr")
             .eq(index + 1)
             .find(".add, .edit");
+
+
+        // initialize the dropdowns
+        var elems = document.querySelectorAll("select");
+        M.FormSelect.init(elems,{});
     }
 
     $(document).ready(function() {
@@ -280,7 +293,23 @@ var WildRydes = window.WildRydes || {};
                             </td>`
                 } else if(colname=="Source") {
                     // create dropdown selection for Source column
-                    row_html += ``
+                    var dropDownOptionsHTML = ``
+                    var accountSelector = document.createElement("select");
+                    for(idxAcctName in accountNames){
+                        var currAcctName = accountNames[idxAcctName];
+                        dropDownOptionsHTML += `<option value="${currAcctName}">${currAcctName}</option>`;
+
+                        var newOption = document.createElement("option");
+                        newOption.innerHTML = currAcctName;
+                        newOption.value = currAcctName;
+                        accountSelector.options.add(newOption)
+                    }
+
+                    accountSelector.disabled = true;
+
+
+
+                    rowHTML += `<td><div class="input-field">${accountSelector.outerHTML}</div></td>`;
 
 
                 }
@@ -299,6 +328,9 @@ var WildRydes = window.WildRydes || {};
                 .eq(index + 1)
                 .find(".add, .edit")
                 .toggle();
+
+            var elems = document.querySelectorAll("select");
+            M.FormSelect.init(elems,{});
             // $('[data-toggle="tooltip"]').tooltip();
         });
 
