@@ -31,7 +31,13 @@ var WildRydes = window.WildRydes || {};
     // variable for keeping track of groups of input radio buttons
     var inputRadioButtonGroupId=0;
     // variable for keywords indicating columns to skip based on the html in the column
-    const skipColKeywords = ["<p>","</p>","<span>","</span>","radio","<label>","</label>"];
+    const skipColKeywordsRadio = ["<p>","</p>",
+    "<span>","</span>","radio",
+    "<label>","</label>"];
+
+
+    // materialize does some special stuff and makes divs like this
+    const skipColKeywordsDropdown = ["select-dropdown","data-target","dropdown-trigger"];
 
     var accountNames = []
 
@@ -309,7 +315,7 @@ var WildRydes = window.WildRydes || {};
 
 
 
-                    rowHTML += `<td><div class="input-field">${accountSelector.outerHTML}</div></td>`;
+                    row_html += `<td><div class="input-field">${accountSelector.outerHTML}</div></td>`;
 
 
                 }
@@ -378,8 +384,9 @@ var WildRydes = window.WildRydes || {};
                     // need some logic to skip dropdowns & radio buttons
                     // todo: add logic to enable drop downs and radio buttons on "edit" button press
                     var innerHTML = $(this).html();
-                    var shouldSkip = skipColKeywords.every(el=>innerHTML.includes(el))
-                    if(!shouldSkip){
+                    var isColumnRadio = skipColKeywordsRadio.every(el=>innerHTML.includes(el))
+                    var isColumnDropdown = skipColKeywordsDropdown.every(el=>innerHTML.includes(el))
+                    if(!isColumnDropdown && !isColumnRadio){
                         $(this).html(
                             '<input type="text" class="form-control" value="' +
                                 $(this).text() +
