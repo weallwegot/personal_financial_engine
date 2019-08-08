@@ -68,6 +68,7 @@ var WildRydes = window.WildRydes || {};
             var row = result[idx];
             addNewRow(row);
         }
+        $(".sample").remove()
     }
 
 

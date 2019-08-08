@@ -84,21 +84,36 @@
                 <table id="account-table" class="table striped responsive-table">
                     <thead>
                         <tr>
-                            <th>Account Name</th>
-                            <th>Balance</th>
-                            <th>Type</th>
-                            <th>Payoff Day</th>
-                            <th>Payoff Source</th>
-                            <th>Credit Limit</th>
-                            <th>Actions</th>
+                            <th>Account Name <i  data-tooltip="Name the account! (could be anything)" class="fa tooltipped fa-info-circle"></i> </th>
+                            <th>Balance<i  data-tooltip="What is the balance? for credit cards, put the amount owed." class="fa tooltipped fa-info-circle"></i></th>
+                            <th>Type<i  data-tooltip="Credit or Checking" class="fa tooltipped fa-info-circle"></i></th>
+                            <th>Payoff Day<i  data-tooltip="what day of the month is this card paid off." class="fa tooltipped fa-info-circle"></i></th>
+                            <th>Payoff Source<i  data-tooltip="if this is a credit card, which account is responsible for paying it off?" class="fa tooltipped fa-info-circle"></i></th>
+                            <th>Credit Limit<i  data-tooltip="if this is a credit card, what is the credit limit. otherwise put a '-' here." class="fa tooltipped fa-info-circle"></i></th>
+                            <th>Actions<i  data-tooltip="edit/delete account!" class="fa tooltipped fa-info-circle"></i></th>
                         </tr>
                     </thead>
                     <tbody>
                         <!-- New Data Will Be Inserted Here -->
-                        <tr>
+                        <tr class="sample">
                             <td>Wells Fargo Checking</td>
                             <td>$780.00</td>
-                            <td>Checking</td>
+                            <td>
+
+
+                              <p>
+                                <label>
+                                  <input name="group1" type="radio" checked />
+                                  <span>Checking</span>
+                                </label>
+                                <label>
+                                  <input name="group1" type="radio" />
+                                  <span>Credit</span>
+                                </label>
+                              </p>
+
+
+                            </td>
                             <td>N/A</td>
                             <td>N/A</td>
                             <td>N/A</td>
@@ -121,10 +136,26 @@
                             </td>
                         </tr>
 
-                        <tr>
+                        <tr class="sample">
                             <td>Chase Sapphire Credit</td>
                             <td>$900.00</td>
-                            <td>Credit</td>
+                            <td>
+
+
+                              <p>
+                                <label>
+                                  <input name="group2" type="radio" checked />
+                                  <span>Checking</span>
+                                </label>
+                                <label>
+                                  <input name="group2" type="radio" />
+                                  <span>Credit</span>
+                                </label>
+                              </p>
+
+
+
+                            </td>
                             <td>1</td>
                             <td>Wells Fargo Checking</td>
                             <td>$9,000.00</td>

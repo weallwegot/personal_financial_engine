@@ -7,6 +7,10 @@ import s3fs
 import json
 import logging
 
+
+logger = logging.getLogger()
+logger.setLevel(logging.INFO)
+
 my_s3fs = s3fs.S3FileSystem()
 toplevel_dir = "s3://financial-engine-data"
 budget_data_filename = "planned-budget.csv"
@@ -32,7 +36,7 @@ DATA_MAP = {'account': {
 }}
 
 
-def place_budget(userid: str, post_body: dict, entity: str) -> None:
+def place_budget(userid: str, post_body: dict, entity: str) -> int:
 
     data_config = DATA_MAP[entity]
     full_path = f"{toplevel_dir}/user_data/{userid}/{data_config['filename']}"

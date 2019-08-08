@@ -29,6 +29,11 @@ var WildRydes = window.WildRydes || {};
         "CreditLimit"
     ];
 
+    // variable for keeping track of groups of input radio buttons
+    var inputRadioButtonGroupId=0;
+    // variable for keywords indicating columns to skip
+    var skipColKeywords = ["<p>","</p>","<span>","</span>","radio","<label>","</label>"];
+
     var actions = $("table td:last-child").html();
 
     // todo: share functions w/ budget
@@ -66,10 +71,13 @@ var WildRydes = window.WildRydes || {};
     // complete the request by taking the timeseries data returned and using it to populate the timeseries plot
     function completeRequest(result) {
         console.log("Response received from API: ", result);
-        for (idx in result) {
-            var row = result[idx];
-            addNewRow(row);
+        var accountItems = result.BudgetItems
+        for (idx in accountItems) {
+            var accountRow = accountItems[idx];
+            addNewRowFromRetrievedData(accountRow);
         }
+        $(".sample").remove()
+
     }
 
 
@@ -102,11 +110,10 @@ var WildRydes = window.WildRydes || {};
             }
         });
     }
-
     function retrieveTableData(event){
 
         //gets table
-        var oTable = document.getElementById('account-table');//('table-bordered')[0];
+        var oTable = document.getElementById('account-table');//'table-bordered')[0];
 
         //gets rows of table
         var numRows = oTable.rows.length;
@@ -123,11 +130,30 @@ var WildRydes = window.WildRydes || {};
            // this should line up with colnames
            var dataObj = {};
            for(var j = 0; j < colnames.length; j++){
-
                   // get your cell info here
-
+                  var colname = colnames[j];
                   var cellVal = oCells.item(j).innerHTML;
-                  dataObj[colnames[j]] = cellVal;
+                  if(colnames[j]=="Type"){
+                    var labelElements = oCells.item(j).getElementsByTagName("label");
+                    Array.from(labelElements).forEach(labelElement =>{
+
+                        // for(idx in labelElements)
+                        // var labelElement = labelElements[idx];
+                        var spanInnerText = labelElement.getElementsByTagName("span")[0].innerText;
+                        var inputIsChecked = labelElement.getElementsByTagName("input")[0].checked;
+                        if(inputIsChecked){
+                            if(spanInnerText=="Checking"){
+                                dataObj[colname] = "Checking";
+                            } else if(spanInnerText=="Credit") {
+                                dataObj[colname] = "Credit";
+                            }
+                        }
+
+
+                    })
+                  } else {
+                    dataObj[colname] = cellVal;
+                  }
 
                }
             dictArray.push(dataObj);
@@ -148,13 +174,38 @@ var WildRydes = window.WildRydes || {};
 
     }
 
-    function addNewRow(row) {
+
+    function addNewRowFromRetrievedData(row) {
         var actions = $("table td:last-child").html();
         var index = $("table tbody tr:last-child").index();
         var rowHTML = "<tr>";
         for (idx in colnames) {
             var colname = colnames[idx];
-            rowHTML += `<td>${row[colname]}</td>`;
+            if(colname=="Type"){
+
+
+                var creditChecked = (row[colname].includes("Credit")) ? "checked" : ""
+                var checkingChecked = (row[colname].includes("Checking")) ? "checked" : ""
+
+                inputRadioButtonGroupId += 1
+                rowHTML += `<td><p>
+                                <label>
+                                  <input name="group${inputRadioButtonGroupId}" type="radio" ${checkingChecked}/>
+                                  <span>Checking</span>
+                                </label>
+                                <label>
+                                  <input name="group${inputRadioButtonGroupId}" type="radio" ${creditChecked}/>
+                                  <span>Credit</span>
+                                </label>
+                              </p>
+                            </td>`
+
+
+
+            } else{
+                rowHTML += `<td>${row[colname]}</td>`;
+            }
+
         }
 
         rowHTML += `<td>${actions}</td>`;
@@ -173,6 +224,8 @@ var WildRydes = window.WildRydes || {};
         M.Modal.init(modal_elems,{})
         // $('[data-toggle="tooltip"]').tooltip();
         var actions = $("table td:last-child").html();
+        var elems = document.querySelectorAll('.tooltipped');
+        var instances = M.Tooltip.init(elems, {});
 
         requestAccountInfo();
 
@@ -184,9 +237,28 @@ var WildRydes = window.WildRydes || {};
             var index = $("table tbody tr:last-child").index();
             var row_html = "<tr>";
             for (idx in colnames) {
-                row_html += `<td><input type="text" class="form-control" name="${
-                    colnames[idx]
-                }" id="${colnames[idx]}"</td>`;
+                var colname = colnames[idx];
+
+
+                if(colname=="Type"){
+
+                inputRadioButtonGroupId += 1
+                row_html += `<td><p>
+                                <label>
+                                  <input name="group${inputRadioButtonGroupId}" type="radio"/>
+                                  <span>Checking</span>
+                                </label>
+                                <label>
+                                  <input name="group${inputRadioButtonGroupId}" type="radio" checked />
+                                  <span>Credit</span>
+                                </label>
+                              </p>
+                            </td>`
+                } else {
+
+                    row_html += `<td><input type="text" class="form-control" name="${colname}" id="${colname}"</td>`;
+                }
+
             }
 
             row_html += `<td>${actions}</td>`;
@@ -239,11 +311,17 @@ var WildRydes = window.WildRydes || {};
                 .parents("tr")
                 .find("td:not(:last-child)")
                 .each(function() {
-                    $(this).html(
-                        '<input type="text" class="form-control" value="' +
-                            $(this).text() +
-                            '">'
-                    );
+                    // need some logic to skip dropdowns & radio buttons
+                    var innerHTML = $(this).html();
+                    var shouldSkip = skipColKeywords.every(el=>innerHTML.includes(el))
+                    if(!shouldSkip){
+                        $(this).html(
+                            '<input type="text" class="form-control" value="' +
+                                $(this).text() +
+                                '">'
+                        );
+
+                    }
                 });
             $(this)
                 .parents("tr")
