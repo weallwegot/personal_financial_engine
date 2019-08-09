@@ -187,7 +187,10 @@ var WildRydes = window.WildRydes || {};
 
     }
 
+    var rownum = 0;
+
     function addNewRowFromRetrievedData(row) {
+        rownum += 1;
         var actions = $("table td:last-child").html();
         var index = $("table tbody tr:last-child").index();
         var rowHTML = "<tr>";
@@ -227,6 +230,8 @@ var WildRydes = window.WildRydes || {};
 
                 var dropDownOptionsHTML = ``
                 var accountSelector = document.createElement("select");
+                var el_id = `selector-row-${rownum}`;
+                accountSelector.id = el_id
                 for(idxAcctName in accountNames){
                     var currAcctName = accountNames[idxAcctName];
                     dropDownOptionsHTML += `<option value="${currAcctName}">${currAcctName}</option>`;
@@ -234,11 +239,13 @@ var WildRydes = window.WildRydes || {};
                     var newOption = document.createElement("option");
                     newOption.innerHTML = currAcctName;
                     newOption.value = currAcctName;
+                    // make the dropdown keep the Source value the same as what was retrieved
+                    if(currAcctName == row[colname]){
+                        newOption.setAttribute("selected",true)
+                    }
+
                     accountSelector.options.add(newOption)
                 }
-
-                accountSelector.disabled = false;
-
 
 
                 rowHTML += `<td><div class="input-field">${accountSelector.outerHTML}</div></td>`;
