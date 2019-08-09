@@ -27,7 +27,7 @@ class Account(AccountInterface):
                  credit_limit: Optional[Union[str, float]]=None) -> None:
 
         self.name = name.strip().upper()
-        self.balance = Q_(float(bal.replace('$', '')), 'usd')
+        self.balance = Q_(float(bal.replace('$', '').replace(',', '')), 'usd')
         self.acct_type = acct_type.upper()
         self.payback_date = payback_date
         self.payback_src = payback_src.strip().upper()
