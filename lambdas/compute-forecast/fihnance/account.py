@@ -1,8 +1,9 @@
-from definitions import Q_, CHECKING, CREDIT, VALID_ACCT_TYPES
+from datetime import datetime
 import logging
 
+from definitions import Q_, CHECKING, CREDIT, VALID_ACCT_TYPES
 from fihnance.transaction import Transaction
-#from numpy import float64
+# from numpy import float64
 from typing import Union, Optional
 logger = logging.getLogger()
 logger.setLevel(logging.INFO)
@@ -33,6 +34,7 @@ class Account(AccountInterface):
         self.payback_src = payback_src.strip().upper()
 
         self.credit_limit = credit_limit
+        self.issues = []
         self._validate()
 
     def __repr__(self) -> str:
@@ -50,7 +52,7 @@ class Account(AccountInterface):
 
             self.credit_limit = Q_(float(self.credit_limit.replace('$', '').replace(',', '')), 'usd')
 
-    def process_tx(self, amount_extractable_obj: Union[AccountInterface, Transaction]) -> None:
+    def process_tx(self, amount_extractable_obj: Union[AccountInterface, Transaction], simulated_day: datetime) -> None:
         """
         figure out which attribute the amount is stored in
         if its a transaction object use the amount attribute
@@ -65,13 +67,16 @@ class Account(AccountInterface):
         if self.acct_type == CREDIT:
             bal_credit_ratio = round(abs(self.balance / self.credit_limit) * 100., 1)
             if bal_credit_ratio > 20:
-                logger.info("{}\nbe careful, you're debt/limit ratio is {}%\n\
-                    anything over 20% may hurt your credit score."
-                            .format(self, bal_credit_ratio))
+                logger.info(f"{self.name}\nbe careful, you're debt/limit ratio is {bal_credit_ratio}%\n\
+                    anything over 20% may hurt your credit score.")
+                issue = {"ISSUE": "DEBT/LIMIT RATIO", "DATE": simulated_day}
+                self.issues.append(issue)
 
         elif self.acct_type == CHECKING:
             if self.balance < Q_(0, 'usd'):
-                logger.info("{} has just overdrafted.".format(self))
+                logger.info(f"{self} has just overdrafted.")
+                issue = {"ISSUE": "OVERDRAFT": "DATE": simulated_day}
+                self.issues.append(issue)
 
         # check if balance is an attribute, and update it
 
@@ -83,7 +88,7 @@ class Account(AccountInterface):
             logger.debug("credit account {} was paid off".
                          format(amount_extractable_obj))
 
-    def payoff_credit_acct(self, account_object: AccountInterface) -> None:
+    def payoff_credit_acct(self, account_object: AccountInterface, simulated_day: datetime) -> None:
         """
         modify the account_object by paying off its balance
         """
@@ -91,7 +96,7 @@ class Account(AccountInterface):
         if account_object.acct_type == CREDIT:
 
             if self.acct_type == CHECKING:
-                self.process_tx(account_object)
+                self.process_tx(account_object, simulated_day)
 
             else:
                 logger.warning("Need to payoff_credt_acct with a checking account.\
