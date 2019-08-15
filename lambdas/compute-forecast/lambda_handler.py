@@ -10,7 +10,7 @@ import logging
 from collections import OrderedDict
 from typing import List, Tuple
 
-from definitions import ROOT_DIR, Q_, CHECKING, CREDIT, FOREVER_RECURRING
+from definitions import ROOT_DIR, Q_, CHECKING, CREDIT, FOREVER_RECURRING, ISSUE_NOTES
 
 from fihnance.account import Account
 from fihnance.transaction import Transaction
@@ -63,8 +63,10 @@ def place_money_warning_data(userid: str, account_objects: List[Account]) -> Non
             dict2write = {}
             dict2write["date"] = issue["DATE"].strftime()
             dict2write["account"] = account.name
-            dict2write["issue"] = issue["ISSUE"]
-            dict2write["notes"] = ""
+
+            issue_key = issue["ISSUE"]
+            dict2write["issue"] = issue_key
+            dict2write["notes"] = ISSUE_NOTES[issue_key]
 
             writer.writerow(entry)
 

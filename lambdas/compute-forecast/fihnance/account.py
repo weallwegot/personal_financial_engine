@@ -1,7 +1,7 @@
 from datetime import datetime
 import logging
 
-from definitions import Q_, CHECKING, CREDIT, VALID_ACCT_TYPES
+from definitions import Q_, CHECKING, CREDIT, VALID_ACCT_TYPES, DEBT_RATIO, OVERCREDIT, OVERDRAFT
 from fihnance.transaction import Transaction
 # from numpy import float64
 from typing import Union, Optional
@@ -66,16 +66,20 @@ class Account(AccountInterface):
         self.balance += amount
         if self.acct_type == CREDIT:
             bal_credit_ratio = round(abs(self.balance / self.credit_limit) * 100., 1)
-            if bal_credit_ratio > 20:
+            if bal_credit_ratio > 25:
                 logger.info(f"{self.name}\nbe careful, you're debt/limit ratio is {bal_credit_ratio}%\n\
-                    anything over 20% may hurt your credit score.")
-                issue = {"ISSUE": "DEBT/LIMIT RATIO", "DATE": simulated_day}
+                    anything over 25% may hurt your credit score.")
+                issue = {"ISSUE": DEBT_RATIO, "DATE": simulated_day, "VALUE": bal_credit_ratio}
+                self.issues.append(issue)
+            if abs(self.balance) > self.credit_limit:
+                logger.info(f"You've spent more than your credit limit for {self.name}")
+                issue = {"ISSUE": OVERCREDIT, "DATE": simulated_day, "VALUE": self.balance}
                 self.issues.append(issue)
 
         elif self.acct_type == CHECKING:
             if self.balance < Q_(0, 'usd'):
                 logger.info(f"{self} has just overdrafted.")
-                issue = {"ISSUE": "OVERDRAFT": "DATE": simulated_day}
+                issue = {"ISSUE": OVERDRAFT: "DATE": simulated_day, "VALUE": self.balance}
                 self.issues.append(issue)
 
         # check if balance is an attribute, and update it

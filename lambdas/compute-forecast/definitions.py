@@ -18,7 +18,7 @@ DEBT_RATIO = "DEBT/CREDIT RATIO HIGH"
 OVERDRAFT = "CHECKING ACCOUNT OVERDRAFT"
 OVERCREDIT = "BALANCE HIGHER THAN CREDIT LIMIT"
 
-ISSUE_NOTES = {DEBT_RATIO: "FICO recommends keeping a debt to limit ratio of under 30%",
+ISSUE_NOTES = {DEBT_RATIO: "FICO recommends keeping a debt to limit ratio of under 25%",
                OVERDRAFT: "Spent more money than you have in this checking account",
                OVERCREDIT: "Credit card balance exceeds your limit."}
 
