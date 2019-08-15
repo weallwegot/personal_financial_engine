@@ -79,7 +79,7 @@ class Account(AccountInterface):
         elif self.acct_type == CHECKING:
             if self.balance < Q_(0, 'usd'):
                 logger.info(f"{self} has just overdrafted.")
-                issue = {"ISSUE": OVERDRAFT: "DATE": simulated_day, "VALUE": self.balance}
+                issue = {"ISSUE": OVERDRAFT, "DATE": simulated_day, "VALUE": self.balance}
                 self.issues.append(issue)
 
         # check if balance is an attribute, and update it

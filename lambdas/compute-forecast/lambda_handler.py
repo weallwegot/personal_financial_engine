@@ -61,14 +61,14 @@ def place_money_warning_data(userid: str, account_objects: List[Account]) -> Non
     for account in account_objects:
         for issue in account.issues:
             dict2write = {}
-            dict2write["date"] = issue["DATE"].strftime()
+            dict2write["date"] = issue["DATE"].strftime("%Y-%m-%d")
             dict2write["account"] = account.name
 
             issue_key = issue["ISSUE"]
             dict2write["issue"] = issue_key
             dict2write["notes"] = ISSUE_NOTES[issue_key]
 
-            writer.writerow(entry)
+            writer.writerow(dict2write)
 
     s3client.put_object(Bucket="financial-engine-data",
                         Key=f"user_data/{userid}/{MONEY_WARNING_FILENAME}",
@@ -270,4 +270,4 @@ def lambda_handler(event, context):
 
     place_forecasted_data(userid, aggregate_df)
     # take issues from accounts and write to s3
-    place_money_warning_data(user_id, list(accts_dict.values()))
+    place_money_warning_data(userid, list(accts_dict.values()))
