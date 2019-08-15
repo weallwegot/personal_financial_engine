@@ -55,10 +55,12 @@ var WildRydes = window.WildRydes || {};
     function completeRequest(result) {
         console.log("Response received from API: ", result);
 
-        var dates = result.map(x => x.date);
-        var totals = result.map(x => x.daily_total);
+        var forecastedMoneyResult = result.forecastData
 
-        var accounts = Object.keys(result[0]).filter(
+        var dates = forecastedMoneyResult.map(x => x.date);
+        var totals = forecastedMoneyResult.map(x => x.daily_total);
+
+        var accounts = Object.keys(forecastedMoneyResult[0]).filter(
             i =>
                 !i.endsWith("transactions") && i != "date" && i != "daily_total"
         );
@@ -67,8 +69,8 @@ var WildRydes = window.WildRydes || {};
         // calculate totals for each account name
         for (idx in accounts) {
             var accName = accounts[idx];
-            var accDailyBalances = result.map(x => x[accName]);
-            var accDailyTxs = result.map(x => x[accName + "transactions"]);
+            var accDailyBalances = forecastedMoneyResult.map(x => x[accName]);
+            var accDailyTxs = forecastedMoneyResult.map(x => x[accName + "transactions"]);
             account_balances[accName] = {
                 x: dates,
                 y: accDailyBalances,

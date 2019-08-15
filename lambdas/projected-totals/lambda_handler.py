@@ -73,15 +73,18 @@ def retrieve_csv_data(full_path):
     Arguments:
         full_path {str} -- path to s3 file for forecast data
     """
-    with my_s3fs.open(full_path, 'r', errors='ignore') as fh:
-        #my_file_lines = fh.readlines()
-        reader = csv.DictReader(fh)
-        if full_path.endswith(forecasted_data_filename):
-            return process_forecast_money_reader(reader)
-        elif full_path.endswith(money_warnings_filename):
-            return process_money_warning_reader(reader)
+    try:
+        with my_s3fs.open(full_path, 'r', errors='ignore') as fh:
+            #my_file_lines = fh.readlines()
+            reader = csv.DictReader(fh)
+            if full_path.endswith(forecasted_data_filename):
+                return process_forecast_money_reader(reader)
+            elif full_path.endswith(money_warnings_filename):
+                return process_money_warning_reader(reader)
+    except FileNotFoundError as e:
+        logging.info(f"{e}")
 
-    return rows
+    return None
 
 
 def lambda_handler(event, _context):
