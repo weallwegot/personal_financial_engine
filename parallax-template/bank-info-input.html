@@ -39,19 +39,45 @@
         <script src="js/bank-info-input.js"></script>
     </head>
     <body>
-        <nav>
-            <div class="nav-wrapper">
-                <div class="col s12">
-                    <a href="/money-ts.html" class="breadcrumb">Money Trends</a>
-                    <a href="/bank-info-input.html" style="text-decoration:underline;" class="breadcrumb"
-                        >Accounts Input</a
-                    >
-                    <a href="/budget-input.html" class="breadcrumb"
-                        >Budget Input</a
-                    >
-                </div>
-            </div>
-        </nav>
+    <nav class="nav-extended">
+      <div class="nav-wrapper">
+        <a href="#" class="brand-logo top-nav-element">Budget App</a>
+        <a href="#" data-target="mobile-menu" class="sidenav-trigger"><i class="material-icons">menu</i></a>
+
+        <ul id="nav-mobile" class="right hide-on-med-and-down">
+          <!-- Nav Elements -->
+          <li>
+            <a href="/money-ts.html">Money Forecast<i class="material-icons right">timeline</i></a>
+          </li>
+          <li>
+            <a href="/bank-info-input.html" href="#">Account Input<i class="material-icons right">account_balance</i></a>
+          </li>
+          <li>
+            <a href="/budget-input.html" href="#">Budget Input<i class="material-icons right">attach_money</i></a>
+          </li>
+          <li>
+            <a id="signOut">Logout <i class="material-icons right">exit_to_app</i> </a>
+          </li>
+          <!-- End Nav Elements -->
+        </ul>
+
+        <ul id="mobile-menu" class="sidenav">
+          <!-- Nav Elements -->
+          <li>
+            <a href="/money-ts.html">Money Forecast<i class="material-icons right">timeline</i></a>
+          </li>
+          <li>
+            <a href="/bank-info-input.html" href="#">Account Input<i class="material-icons right">account_balance</i></a>
+          </li>
+          <li>
+            <a href="/budget-input.html" href="#">Budget Input<i class="material-icons right">attach_money</i></a>
+          </li>
+          <li>
+            <a id="signOut">Logout <i class="material-icons right">exit_to_app</i> </a>
+          </li>
+          <!-- End Nav Elements -->
+        </ul>
+      </div>
 
 
 
