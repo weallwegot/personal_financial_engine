@@ -55,6 +55,7 @@ var WildRydes = window.WildRydes || {};
     function completeRequest(result) {
         console.log("Response received from API: ", result);
 
+        // get the forecasted data
         var forecastedMoneyResult = result.forecastData
 
         var dates = forecastedMoneyResult.map(x => x.date);
@@ -88,11 +89,63 @@ var WildRydes = window.WildRydes || {};
         };
 
         var data = [totals_trace];
-
+        // plot the forecsted data
         Plotly.newPlot(
             "money-ts-line-plot",
             data.concat(Object.values(account_balances))
         );
+
+        // get the money warnings data
+        var moneyWarnings = result.moneyWarningData;
+        var warningsByAccount = {};
+        var warningsCollapsible = $("#money-warning-list")[0];
+
+        for(idx in accounts){
+
+
+            var accName = accounts[idx];
+
+            var iElement = document.createElement("i");
+            iElement.classList.add("material-icons");
+            iElement.innerText = "expand_more";
+
+
+            var liElement = document.createElement("li");
+
+            liElement.id = `${accName}-li`
+
+            var divHeader = document.createElement("div");
+            divHeader.classList.add("collapsible-header");
+            divHeader.id = `${accName}-collapsible-header-div`;
+
+            // divHeader.appendChild(iElement);
+            divHeader.innerHTML = iElement.outerHTML;
+            divHeader.innerHTML += `${accName} Warnings`;
+            // put the collapsible div element in li
+            liElement.appendChild(divHeader);
+            // put the li element in the ul element
+            warningsCollapsible.appendChild(liElement);
+        }
+        var idIter = 0;
+
+        for(idx in moneyWarnings) {
+            var warningObject = moneyWarnings[idx];
+            var accName = warningObject.account;
+            var accountDivElement = $(`#${accName}-collapsible-header-div`);
+
+            var accountLiElement = $(`#${accName}-li`)[0];
+
+            var divMoneyWarningContent = document.createElement("div");
+            divMoneyWarningContent.id = `${accName}-content-warning-div-${idIter}`;
+            divMoneyWarningContent.classList.add("collapsible-body");
+            divMoneyWarningContent.innerHTML = `<span>${warningObject.date} - ${warningObject.issue} - ${warningObject.notes}. </br></span>`;
+
+            accountLiElement.appendChild(divMoneyWarningContent)
+            idIter += 1;
+
+        }
+        $('.collapsible').collapsible();
+
     }
 
     // Register click handler for #signout button
