@@ -12,8 +12,9 @@ import logging
 import subprocess
 import sys
 
-logging.setLevel('debug')
+
 LOGGER = logging.getLogger()
+LOGGER.setLevel(logging.DEBUG)
 
 
 def is_func_new(funcname):
@@ -103,7 +104,7 @@ for lambda_name in LAMBDAS2DEPLOY:
     # https://stackoverflow.com/questions/5466451/how-can-i-print-literal-curly-brace-characters-in-python-string-and-also-use-fo#5466478
     VARS_STR_TEMPLATE = "Variables={{{}}}"
     env_vars = ""
-    for config_tuple in cfg.items('environment'):
+    for config_tuple in cfg.items(f'environment-{lambda_name}'):
         env_vars += "{k}={v},".format(k=config_tuple[0], v=config_tuple[1])
 
     if env_vars.endswith(","):
