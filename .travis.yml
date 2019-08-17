@@ -19,4 +19,4 @@ deploy:
   - provider: script
     script: python CI/deploy_orchestration.py CI-test-alias ${AWS_LAMBDA_ROLE}
     on:
-      branch: feature/CI
+      branch: feature/ci
