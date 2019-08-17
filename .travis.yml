@@ -17,6 +17,6 @@ deploy:
     on:
       branch: develop
   - provider: script
-    script: python CI/deploy_orchestration.py develop ${AWS_LAMBDA_ROLE}
+    script: python CI/deploy_orchestration.py CI-test-alias ${AWS_LAMBDA_ROLE}
     on:
-      branch: CI
+      branch: feature/CI
