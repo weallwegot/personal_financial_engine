@@ -220,6 +220,13 @@ var WildRydes = window.WildRydes || {};
 
 
     $(document).ready(function() {
+        $(".signOut").click(function() {
+            WildRydes.signOut();
+            alert("You have been signed out.");
+            window.location = "signin.html";
+        });
+
+
         var modal_elems = document.querySelectorAll('.modal')
         M.Modal.init(modal_elems,{})
         // $('[data-toggle="tooltip"]').tooltip();
