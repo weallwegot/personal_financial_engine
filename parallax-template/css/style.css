@@ -32,6 +32,14 @@ p {
   background-color:transparent;!important
 }
 
+.account-header-with-issues {
+  background-color:palevioletred;
+}
+
+.account-header-no-issues {
+  background-color:yellowgreen;
+}
+
 
 .sidenav-trigger {
   color: #26a69a;

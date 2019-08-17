@@ -54,7 +54,7 @@ def get_budget(userid: str, entity: str)-> List[str]:
         with my_s3fs.open(full_path, 'r', errors='ignore') as fh:
             reader = csv.DictReader(fh)
             rows = [row for row in reader]
-    except ClientError:
+    except (ClientError, FileNotFoundError):
         logger.warning(f"There was an error opening {full_path}")
         return {"AccountNames": account_names, "Error": "Missing the budget information for user"}
 
