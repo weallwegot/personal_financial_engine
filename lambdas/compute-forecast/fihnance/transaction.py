@@ -1,8 +1,9 @@
-from definitions import Q_, FOREVER_RECURRING
+from datetime import datetime
 from dateutil import parser
 import logging
-from datetime import datetime
 from typing import Union, Optional
+
+from definitions import Q_, FOREVER_RECURRING
 
 logger = logging.getLogger()
 logger.setLevel(logging.INFO)
