@@ -10,7 +10,7 @@ import logging
 from collections import OrderedDict
 from typing import List, Tuple
 
-from definitions import ROOT_DIR, Q_, CHECKING, CREDIT, FOREVER_RECURRING
+from definitions import ROOT_DIR, Q_, CHECKING, CREDIT, FOREVER_RECURRING, ISSUE_NOTES
 
 from fihnance.account import Account
 from fihnance.transaction import Transaction
@@ -40,6 +40,39 @@ def get_data(userid: str) -> Tuple[List[OrderedDict], List[OrderedDict]]:
         budget_rows = [row for row in budget_reader]
 
     return account_rows, budget_rows
+
+
+def place_money_warning_data(userid: str, account_objects: List[Account]) -> None:
+    """
+    place the data about account money warnings into s3
+    """
+    MONEY_WARNING_FILENAME = "money-warnings.csv"
+    MONEY_WARNING_FIELDS = ["date", "account", "issue", "notes"]
+    s3client = boto3.client('s3')
+
+    output = io.StringIO()
+
+    # if not set(FIELDNAMES_REQUIRED).intersection(set(FIELDNAMES)):
+    #     logger.warning(f'Columns required not seen: {FIELDNAMES_REQUIRED}')
+    #     return
+
+    writer = csv.DictWriter(output, fieldnames=MONEY_WARNING_FIELDS)
+    writer.writeheader()
+    for account in account_objects:
+        for issue in account.issues:
+            dict2write = {}
+            dict2write["date"] = issue["DATE"].strftime("%Y-%m-%d")
+            dict2write["account"] = account.name
+
+            issue_key = issue["ISSUE"]
+            dict2write["issue"] = issue_key
+            dict2write["notes"] = ISSUE_NOTES[issue_key]
+
+            writer.writerow(dict2write)
+
+    s3client.put_object(Bucket="financial-engine-data",
+                        Key=f"user_data/{userid}/{MONEY_WARNING_FILENAME}",
+                        Body=output.getvalue())
 
 
 def place_forecasted_data(userid: str, tx_data: List[OrderedDict]) -> None:
@@ -176,7 +209,7 @@ def lambda_handler(event, context):
                 except KeyError:
                     raise KeyError(f"Transaction Source {tx.source} is not an account in {accts_dict.keys()}")
                 # take the money from the account it is coming from
-                acct_obj.process_tx(tx)
+                acct_obj.process_tx(tx, simulated_day)
                 # track the transactions that happened today
                 txs_occurring_today.append((tx.description, tx.source, tx.amount.magnitude))
 
@@ -204,7 +237,7 @@ def lambda_handler(event, context):
                                    .format(acct_obj.payback_src, accts_dict.keys()))
 
                 # this function modifies both accounts in place
-                payback_src_acct.payoff_credit_acct(acct_obj)
+                payback_src_acct.payoff_credit_acct(acct_obj, simulated_day)
 
         logger.info(f"Day: {simulated_day}".format(simulated_day))
         logger.info(f"Amount: {accts_dict.values()}")
@@ -236,3 +269,5 @@ def lambda_handler(event, context):
         aggregate_df = place_column_data(aggregate_df, new_col_name, acct_specific_txs)
 
     place_forecasted_data(userid, aggregate_df)
+    # take issues from accounts and write to s3
+    place_money_warning_data(userid, list(accts_dict.values()))
