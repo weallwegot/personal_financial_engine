@@ -11,7 +11,10 @@ aws-wildrydes-web*
 **money_io.csv
 **my_*.csv
 outputs/**
-*.csv
+local_engine/outputs/*
+local_engine/data/*.csv
+local_engine/*.html
+local_engine/*.csv
 *.numbers
 main.html
 temp-plot.html
