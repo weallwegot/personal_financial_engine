@@ -100,15 +100,12 @@ var WildRydes = window.WildRydes || {};
         var warningsByAccount = {};
         var warningsCollapsible = $("#money-warning-list")[0];
 
+        // set up the collapsible menu for each account
+        // mapping variable used to keep each collapsible body id unique
+        var accWarningObjectCounter = {};
         for(idx in accounts){
 
-
             var accName = accounts[idx];
-
-            var iElement = document.createElement("i");
-            iElement.classList.add("material-icons");
-            iElement.innerText = "expand_more";
-
 
             var liElement = document.createElement("li");
 
@@ -116,34 +113,57 @@ var WildRydes = window.WildRydes || {};
 
             var divHeader = document.createElement("div");
             divHeader.classList.add("collapsible-header");
+            divHeader.classList.add("account-header-no-issues")
             divHeader.id = `${accName}-collapsible-header-div`;
+            divHeader.style.display = "none";
 
             // divHeader.appendChild(iElement);
-            divHeader.innerHTML = iElement.outerHTML;
-            divHeader.innerHTML += `${accName} Warnings`;
+            // divHeader.innerHTML = iElement.outerHTML;
+            // divHeader.innerHTML += `${accName} Warnings`;
             // put the collapsible div element in li
             liElement.appendChild(divHeader);
             // put the li element in the ul element
             warningsCollapsible.appendChild(liElement);
-        }
-        var idIter = 0;
 
+            accWarningObjectCounter[accName] = 0;
+        }
+
+
+        // populate the collapsible menu with each money warning.
         for(idx in moneyWarnings) {
+
             var warningObject = moneyWarnings[idx];
             var accName = warningObject.account;
-            var accountDivElement = $(`#${accName}-collapsible-header-div`);
 
-            var accountLiElement = $(`#${accName}-li`)[0];
+            var warningiElement = document.createElement("i");
+            warningiElement.classList.add("material-icons");
+            warningiElement.innerText = "warning";
 
-            var divMoneyWarningContent = document.createElement("div");
-            divMoneyWarningContent.id = `${accName}-content-warning-div-${idIter}`;
-            divMoneyWarningContent.classList.add("collapsible-body");
-            divMoneyWarningContent.innerHTML = `<span>${warningObject.date} - ${warningObject.issue} - ${warningObject.notes}. </br></span>`;
 
-            accountLiElement.appendChild(divMoneyWarningContent)
-            idIter += 1;
+            if(accWarningObjectCounter[accName] < 3){
 
+                var accountDivElement = $(`#${accName}-collapsible-header-div`)[0];
+
+                accountDivElement.style.display = "block";
+                accountDivElement.classList.add("account-header-with-issues");
+                accountDivElement.classList.remove("account-header-no-issues")
+                accountDivElement.innerHTML = warningiElement.outerHTML;
+                accountDivElement.innerHTML += `${accName} Warnings`
+
+                var accountLiElement = $(`#${accName}-li`)[0];
+
+                var divMoneyWarningContent = document.createElement("div");
+                divMoneyWarningContent.id = `${accName}-content-warning-div-${accWarningObjectCounter[accName]}`;
+                divMoneyWarningContent.classList.add("collapsible-body");
+                divMoneyWarningContent.innerHTML = `<span>Detected ${warningObject.issue}. The issue is projected to occur on ${warningObject.date}. ${warningObject.notes}. </br></span>`;
+
+                accountLiElement.appendChild(divMoneyWarningContent);
+
+            }
+
+            accWarningObjectCounter[accName]+=1;
         }
+        // initialize the materialize element
         $('.collapsible').collapsible();
 
     }
