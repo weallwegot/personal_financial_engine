@@ -52,7 +52,7 @@ def deploy_lambda(new):
     RUNTIME=${10}
     REGION=${11}
     """
-    bashCommand = "bash scripts/aws-lambda-deploy.sh \
+    bashCommand = "bash CI/aws-lambda-deploy.sh \
     {isnew} \
     {AWS_LAMBDA_ROLE} \
     {alias} \
