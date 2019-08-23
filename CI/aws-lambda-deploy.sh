@@ -13,20 +13,29 @@ DESC=$8
 ENV=$9
 RUNTIME=${10}
 REGION=${11}
+FOLDER_NAME=${12}
 
 
 echo "beginning deployment script" >&2
 
-echo "install requirements.txt"
+cd lambdas
+cd $FOLDER_NAME
+
+
 mkdir lambda_deployment_package
 cd lambda_deployment_package
+echo "install requirements.txt" >&2
 # install s3fs seperately because the dependencies are already in the lamdba env
 pip install --no-deps --no-cache-dir --compile s3fs --target .
 pip install --no-cache-dir --compile -r ../requirements.txt --target .
 
 
 echo "zipping deployment package" >&2
+
+rsync -av --exclude=lambda_deployment_package --exclude=*.pyc --exclude=__pycache__/* --exclude=event.json --exclude=requirements.txt ../ .
+
 zip -r9 ../function.zip .
+
 cd ../
 
 # get handler file name from $HANDLER variable
@@ -54,12 +63,13 @@ aws lambda create-function \
     --role "$RESOURCE_ROLE" \
     --description "$DESC" \
 
-echo "creating/updating alias of $ALIAS" >&2
+echo "creating alias of $ALIAS" >&2
 aws lambda create-alias \
     --function-name $FNAME \
     --name "$ALIAS" \
     --function-version \$LATEST
 
+echo "UPDATING alias of $ALIAS" >&2
 aws lambda update-alias \
     --function-name $FNAME \
     --name "$ALIAS" \
@@ -88,11 +98,13 @@ aws lambda update-function-configuration \
     --role "${RESOURCE_ROLE}" \
     --description "$DESC" \
 
-echo "creating/updating alias of $ALIAS" >&2
+echo "creating alias of $ALIAS" >&2
 aws lambda create-alias \
     --function-name $FNAME \
     --name "$ALIAS" \
     --function-version \$LATEST
+
+echo "UPDATING alias of $ALIAS" >&2
 
 aws lambda update-alias \
     --function-name $FNAME \

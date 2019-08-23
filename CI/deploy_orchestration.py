@@ -37,7 +37,7 @@ def is_func_new(funcname):
     return False
 
 
-def deploy_lambda(new):
+def deploy_lambda(new, folder_name):
     """
     ISNEW=$1
     RESOURCE_ROLE=$2
@@ -51,12 +51,13 @@ def deploy_lambda(new):
     ENV=$9
     RUNTIME=${10}
     REGION=${11}
+    FOLDER_NAME=${12}
     """
     bashCommand = "bash CI/aws-lambda-deploy.sh \
     {isnew} \
     {AWS_LAMBDA_ROLE} \
     {alias} \
-    {funcname} {handler} {timeout} {memsize} '{desc}' '{env}' '{runtime}' '{region}'".format(
+    {funcname} {handler} {timeout} {memsize} '{desc}' '{env}' '{runtime}' '{region}' {folder_name}".format(
         AWS_LAMBDA_ROLE=RESOURCE_ROLE,
         isnew=new,
         alias=ALIAS,
@@ -67,8 +68,8 @@ def deploy_lambda(new):
         region=CONFIG_PARAMS['region'],
         timeout=CONFIG_PARAMS['timeout'],
         memsize=CONFIG_PARAMS['memory-size'],
-        env=VARS_STR
-    )
+        env=VARS_STR,
+        folder_name=folder_name)
 
     process = subprocess.Popen(bashCommand, stdout=subprocess.PIPE, shell=True)
     output, error = process.communicate()
@@ -90,13 +91,13 @@ cfg.read('deployment_config.ini')
 
 # loop through each lambda to deploy
 
-for lambda_name in LAMBDAS2DEPLOY:
+for folder_name in LAMBDAS2DEPLOY:
 
-    LOGGER.info(f"deploying {lambda_name}")
+    LOGGER.info(f"deploying {folder_name}")
 
     # parse lambda configuration parameters
     CONFIG_PARAMS = {}
-    for config_tuple in cfg.items(f'configuration-{lambda_name}'):
+    for config_tuple in cfg.items(f'configuration-{folder_name}'):
         name = config_tuple[0]
         val = config_tuple[1]
         CONFIG_PARAMS[name] = val
@@ -104,7 +105,7 @@ for lambda_name in LAMBDAS2DEPLOY:
     # https://stackoverflow.com/questions/5466451/how-can-i-print-literal-curly-brace-characters-in-python-string-and-also-use-fo#5466478
     VARS_STR_TEMPLATE = "Variables={{{}}}"
     env_vars = ""
-    for config_tuple in cfg.items(f'environment-{lambda_name}'):
+    for config_tuple in cfg.items(f'environment-{folder_name}'):
         env_vars += "{k}={v},".format(k=config_tuple[0], v=config_tuple[1])
 
     if env_vars.endswith(","):
@@ -112,4 +113,4 @@ for lambda_name in LAMBDAS2DEPLOY:
     VARS_STR = VARS_STR_TEMPLATE.format(env_vars)
     LOGGER.info(f"Parsed environment variables:\n{VARS_STR}")
 
-    deploy_lambda(new=is_func_new(CONFIG_PARAMS['function-name']))
+    deploy_lambda(new=is_func_new(CONFIG_PARAMS['function-name']), folder_name=folder_name)
