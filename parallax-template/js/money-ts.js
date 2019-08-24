@@ -106,15 +106,17 @@ var WildRydes = window.WildRydes || {};
         for(idx in accounts){
 
             var accName = accounts[idx];
+            // replace white space with - for valid HTML4/5 ids
+            var accNameForId = accName.replace(/\s/g,'-')
 
             var liElement = document.createElement("li");
 
-            liElement.id = `${accName}-li`
+            liElement.id = `${accNameForId}-li`
 
             var divHeader = document.createElement("div");
             divHeader.classList.add("collapsible-header");
             divHeader.classList.add("account-header-no-issues")
-            divHeader.id = `${accName}-collapsible-header-div`;
+            divHeader.id = `${accNameForId}-collapsible-header-div`;
             divHeader.style.display = "none";
 
             // divHeader.appendChild(iElement);
@@ -135,6 +137,9 @@ var WildRydes = window.WildRydes || {};
             var warningObject = moneyWarnings[idx];
             var accName = warningObject.account;
 
+            // replace white space with - for valid HTML4/5 ids
+            var accNameForId = accName.replace(/\s/g,'-')
+
             var warningiElement = document.createElement("i");
             warningiElement.classList.add("material-icons");
             warningiElement.innerText = "warning";
@@ -142,7 +147,7 @@ var WildRydes = window.WildRydes || {};
 
             if(accWarningObjectCounter[accName] < 3){
 
-                var accountDivElement = $(`#${accName}-collapsible-header-div`)[0];
+                var accountDivElement = $(`#${accNameForId}-collapsible-header-div`)[0];
 
                 accountDivElement.style.display = "block";
                 accountDivElement.classList.add("account-header-with-issues");
@@ -150,10 +155,10 @@ var WildRydes = window.WildRydes || {};
                 accountDivElement.innerHTML = warningiElement.outerHTML;
                 accountDivElement.innerHTML += `${accName} Warnings`
 
-                var accountLiElement = $(`#${accName}-li`)[0];
+                var accountLiElement = $(`#${accNameForId}-li`)[0];
 
                 var divMoneyWarningContent = document.createElement("div");
-                divMoneyWarningContent.id = `${accName}-content-warning-div-${accWarningObjectCounter[accName]}`;
+                divMoneyWarningContent.id = `${accNameForId}-content-warning-div-${accWarningObjectCounter[accName]}`;
                 divMoneyWarningContent.classList.add("collapsible-body");
                 divMoneyWarningContent.innerHTML = `<span>Detected ${warningObject.issue}. The issue is projected to occur on ${warningObject.date}. ${warningObject.notes}. </br></span>`;
 
@@ -170,7 +175,7 @@ var WildRydes = window.WildRydes || {};
 
     // Register click handler for #signout button
     $(function onDocReady() {
-        $("#signOut").click(function() {
+        $(".signOut").click(function() {
             WildRydes.signOut();
             alert("You have been signed out.");
             window.location = "signin.html";
