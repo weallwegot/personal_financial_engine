@@ -16,7 +16,7 @@ REGION=${11}
 FOLDER_NAME=${12}
 
 
-echo "beginning deployment script" >&2
+echo "beginning LAMBDA deployment script" >&2
 
 cd lambdas
 cd $FOLDER_NAME
@@ -31,7 +31,7 @@ pip install --no-cache-dir --compile -r ../requirements.txt --target .
 
 
 echo "zipping deployment package" >&2
-
+# like cp, but more options for excluding files/dir
 rsync -av --exclude=lambda_deployment_package --exclude=*.pyc --exclude=__pycache__/* --exclude=event.json --exclude=requirements.txt ../ .
 
 zip -r9 ../function.zip .

@@ -17,6 +17,22 @@ LOGGER = logging.getLogger()
 LOGGER.setLevel(logging.DEBUG)
 
 
+def deploy_s3_frontend(stage):
+    """
+    deply front end pages static html
+    """
+    BUCKETPATHS = {"master": "s3://financial-engine-frontend",
+                   "develop": "s3://staging-financial-engine-frontend",
+                   "CI-test-alias": "s3://staging-financial-engine-frontend"}
+    bashCommand = "bash CI/aws-s3-deploy.sh {bucket}".format(bucket=BUCKETPATHS[stage])
+
+    process = subprocess.Popen(bashCommand, stdout=subprocess.PIPE, shell=True)
+    output, error = process.communicate()
+
+    if error:
+        logging.error(error)
+
+
 def is_func_new(funcname):
     """
     determine if function being deployed is brand new or just needs updates
@@ -114,3 +130,5 @@ for folder_name in LAMBDAS2DEPLOY:
     LOGGER.info(f"Parsed environment variables:\n{VARS_STR}")
 
     deploy_lambda(new=is_func_new(CONFIG_PARAMS['function-name']), folder_name=folder_name)
+
+deploy_s3_frontend(stage=ALIAS)
