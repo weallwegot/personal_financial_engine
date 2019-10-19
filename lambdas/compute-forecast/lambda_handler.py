@@ -239,8 +239,8 @@ def lambda_handler(event, context):
                 # this function modifies both accounts in place
                 payback_src_acct.payoff_credit_acct(acct_obj, simulated_day)
 
-        logger.info(f"Day: {simulated_day}".format(simulated_day))
-        logger.info(f"Amount: {accts_dict.values()}")
+        logger.debug(f"Day: {simulated_day}".format(simulated_day))
+        logger.debug(f"Amount: {accts_dict.values()}")
 
         acct_data = []
         acct_names = []

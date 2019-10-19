@@ -49,7 +49,11 @@ class Transaction(object):
             logger.info(f'received frequency of {self.frequency} assuming units of days')
             self.frequency = Q_(f'{self.frequency} days')
 
-        self.sample_date = parser.parse(self.sample_date)
+        try:
+            self.sample_date = parser.parse(self.sample_date)
+        except ValueError as e:
+            logger.error(f'{self.sample_date} is not a valid date')
+            raise e
 
         try:
             self.until_date = parser.parse(self.until_date)
