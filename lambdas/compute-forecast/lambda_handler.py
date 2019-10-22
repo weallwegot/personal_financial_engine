@@ -1,17 +1,17 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-import boto3
-import s3fs
+from collections import OrderedDict
 import csv
-import io
 import datetime
+import io
 import json
 import logging
-from collections import OrderedDict
 from typing import List, Tuple
 
-from definitions import ROOT_DIR, Q_, CHECKING, CREDIT, FOREVER_RECURRING, ISSUE_NOTES
+import boto3
+import s3fs
 
+from definitions import ROOT_DIR, Q_, CHECKING, CREDIT, FOREVER_RECURRING, ISSUE_NOTES
 from fihnance.account import Account
 from fihnance.transaction import Transaction
 
@@ -239,8 +239,8 @@ def lambda_handler(event, context):
                 # this function modifies both accounts in place
                 payback_src_acct.payoff_credit_acct(acct_obj, simulated_day)
 
-        logger.info(f"Day: {simulated_day}".format(simulated_day))
-        logger.info(f"Amount: {accts_dict.values()}")
+        logger.debug(f"Day: {simulated_day}".format(simulated_day))
+        logger.debug(f"Amount: {accts_dict.values()}")
 
         acct_data = []
         acct_names = []

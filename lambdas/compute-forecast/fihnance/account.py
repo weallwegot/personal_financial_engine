@@ -1,10 +1,11 @@
 from datetime import datetime
 import logging
+from typing import Union, Optional
 
 from definitions import Q_, CHECKING, CREDIT, VALID_ACCT_TYPES, DEBT_RATIO, OVERCREDIT, OVERDRAFT
 from fihnance.transaction import Transaction
 # from numpy import float64
-from typing import Union, Optional
+
 logger = logging.getLogger()
 logger.setLevel(logging.INFO)
 
